@@ -191,13 +191,43 @@ struct PlanSelectionView: View {
     let products: [Product]
     @Binding var selectedProduct: Product?
     
+    private var monthlyProduct: Product? {
+        products.first { $0.id.contains("monthly") }
+    }
+    
+    private var yearlyProduct: Product? {
+        products.first { $0.id.contains("yearly") }
+    }
+    
     var body: some View {
-        VStack(spacing: 15) {
-            Text("プランを選択")
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .leading)
+        VStack(spacing: 20) {
+            VStack(spacing: 8) {
+                Text("プランを選択")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Text("どちらのプランでも全ての機能をご利用いただけます")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             
-            ForEach(products, id: \.id) { product in
+            // プラン比較カード
+            if let monthly = monthlyProduct, let yearly = yearlyProduct {
+                PlanComparisonView(monthlyProduct: monthly, yearlyProduct: yearly, selectedProduct: $selectedProduct)
+            }
+            
+            // 個別プランカード
+            ForEach(products.sorted(by: { p1, p2 in
+                // 年間プランを先に表示
+                if p1.id.contains("yearly") && p2.id.contains("monthly") {
+                    return true
+                } else if p1.id.contains("monthly") && p2.id.contains("yearly") {
+                    return false
+                }
+                return p1.price < p2.price
+            }), id: \.id) { product in
                 PlanCardView(
                     product: product,
                     isSelected: selectedProduct?.id == product.id
@@ -206,6 +236,121 @@ struct PlanSelectionView: View {
                 }
             }
         }
+    }
+}
+
+struct PlanComparisonView: View {
+    let monthlyProduct: Product
+    let yearlyProduct: Product
+    @Binding var selectedProduct: Product?
+    
+    private var monthlyCost: Double {
+        monthlyProduct.price.doubleValue * 12
+    }
+    
+    private var yearlyCost: Double {
+        yearlyProduct.price.doubleValue
+    }
+    
+    private var savings: Double {
+        monthlyCost - yearlyCost
+    }
+    
+    private var savingsPercentage: Int {
+        Int((savings / monthlyCost) * 100)
+    }
+    
+    var body: some View {
+        VStack(spacing: Constants.Spacing.medium) {
+            Text("年間プランがお得！")
+                .font(.headline)
+                .foregroundColor(.orange)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            HStack(spacing: Constants.Spacing.medium) {
+                // 月間プラン
+                VStack(spacing: Constants.Spacing.small) {
+                    Text("月間プラン")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    
+                    Text(monthlyProduct.displayPrice)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                    
+                    Text("/月")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Text("年間 ¥\(Int(monthlyCost))")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(Constants.Spacing.medium)
+                .background(Constants.Colors.surfaceFallback)
+                .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.medium))
+                
+                // VS
+                Text("VS")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundColor(.secondary)
+                
+                // 年間プラン
+                VStack(spacing: Constants.Spacing.small) {
+                    HStack {
+                        Text("年間プラン")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                        
+                        Text("\(savingsPercentage)%OFF")
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.red)
+                            .clipShape(Capsule())
+                    }
+                    
+                    Text(yearlyProduct.displayPrice)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.orange)
+                    
+                    Text("/年")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Text("¥\(Int(savings))節約")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundColor(.green)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(Constants.Spacing.medium)
+                .background(Color.orange.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.medium))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
+                        .stroke(Color.orange, lineWidth: 1)
+                )
+            }
+        }
+        .padding(Constants.Spacing.medium)
+        .background(
+            LinearGradient(
+                gradient: Gradient(colors: [Color.orange.opacity(0.05), Color.yellow.opacity(0.05)]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.large))
+        .overlay(
+            RoundedRectangle(cornerRadius: Constants.CornerRadius.large)
+                .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+        )
     }
 }
 
@@ -224,64 +369,127 @@ struct PlanCardView: View {
     
     private var planDescription: String {
         if isYearlyPlan {
-            return "2ヶ月分お得！"
+            return "2ヶ月分お得！年間利用で最大の節約"
         } else {
-            return "いつでもキャンセル可能"
+            return "いつでもキャンセル可能・短期利用に最適"
         }
+    }
+    
+    private var monthlyEquivalent: String? {
+        if isYearlyPlan {
+            // 年間プランの月額換算を計算
+            let yearlyPrice = product.price
+            let monthlyEquivalent = yearlyPrice / 12
+            return String(format: "月額換算 ¥%.0f", monthlyEquivalent.doubleValue)
+        }
+        return nil
+    }
+    
+    private var savingsText: String? {
+        if isYearlyPlan {
+            return "年間で約¥960節約"
+        }
+        return nil
     }
     
     var body: some View {
         Button(action: onSelect) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        Text(planTitle)
-                            .font(.headline)
+            VStack(spacing: Constants.Spacing.medium) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text(planTitle)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .foregroundColor(.black)
+                            
+                            if isYearlyPlan {
+                                Text("おすすめ")
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 3)
+                                    .background(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [.orange, .red]),
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                                    .clipShape(Capsule())
+                            }
+                            
+                            Spacer()
+                        }
+                        
+                        Text(planDescription)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    VStack(alignment: .trailing, spacing: 4) {
+                        Text(product.displayPrice)
+                            .font(.title2)
+                            .fontWeight(.bold)
                             .foregroundColor(.black)
                         
-                        if isYearlyPlan {
-                            Text("おすすめ")
+                        Text(isYearlyPlan ? "/年" : "/月")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        if let monthlyEquivalent = monthlyEquivalent {
+                            Text(monthlyEquivalent)
                                 .font(.caption)
+                                .foregroundColor(.green)
                                 .fontWeight(.medium)
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 2)
-                                .background(Color.orange)
-                                .clipShape(Capsule())
                         }
+                    }
+                }
+                
+                if let savingsText = savingsText {
+                    HStack {
+                        Image(systemName: "tag.fill")
+                            .foregroundColor(.green)
+                            .font(.caption)
+                        
+                        Text(savingsText)
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(.green)
                         
                         Spacer()
                     }
-                    
-                    Text(planDescription)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    .padding(.horizontal, Constants.Spacing.small)
+                    .padding(.vertical, Constants.Spacing.extraSmall)
+                    .background(Color.green.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.small))
                 }
                 
-                Spacer()
-                
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(product.displayPrice)
+                HStack {
+                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                         .font(.title3)
-                        .fontWeight(.bold)
-                        .foregroundColor(.black)
+                        .foregroundColor(isSelected ? .green : .gray)
                     
-                    Text(isYearlyPlan ? "/年" : "/月")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    Text(isSelected ? "選択中" : "選択する")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(isSelected ? .green : .gray)
+                    
+                    Spacer()
                 }
-                
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundColor(isSelected ? .green : .gray)
             }
             .padding(Constants.Spacing.medium)
             .background(
-                RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
-                    .fill(isSelected ? Color.blue.opacity(0.1) : Constants.Colors.surfaceFallback)
+                RoundedRectangle(cornerRadius: Constants.CornerRadius.large)
+                    .fill(isSelected ? Color.blue.opacity(0.05) : Constants.Colors.surfaceFallback)
                     .overlay(
-                        RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
-                            .stroke(isSelected ? Color.blue : Color.gray.opacity(0.2), lineWidth: isSelected ? 2 : 1)
+                        RoundedRectangle(cornerRadius: Constants.CornerRadius.large)
+                            .stroke(
+                                isSelected ? Color.blue : 
+                                (isYearlyPlan ? Color.orange.opacity(0.5) : Color.gray.opacity(0.2)), 
+                                lineWidth: isSelected ? 2 : 1
+                            )
                     )
             )
         }
