@@ -39,24 +39,19 @@ struct SettingsView: View {
                 
                 // プレミアム機能セクション
                 Section("プレミアム機能") {
-                    if subscriptionManager.isSubscribed {
-                        // プレミアムユーザー向け表示
-                        PremiumStatusView(subscriptionManager: subscriptionManager) {
-                            showingSubscriptionSheet = true
-                        }
-                    } else {
-                        // 無料ユーザー向け表示
-                        FreeUserUpgradeView(subscriptionManager: subscriptionManager) {
-                            showingSubscriptionSheet = true
-                        }
+                    SettingsRowView(
+                        icon: "crown.fill",
+                        title: "プレミアムプラン",
+                        subtitle: subscriptionManager.isSubscribed ? "アクティブ - すべての機能が利用可能" : "無制限のバイク登録・広告なし",
+                        iconColor: .orange
+                    ) {
+                        showingSubscriptionSheet = true
                     }
                 }
                 
-                // 広告設定セクション（無料ユーザーのみ表示）
-                if !subscriptionManager.isSubscribed {
-                    Section("広告") {
-                        AdSettingsView()
-                    }
+                // 広告設定セクション
+                Section("広告") {
+                    AdSettingsView()
                 }
                 
                 // サポートセクション
