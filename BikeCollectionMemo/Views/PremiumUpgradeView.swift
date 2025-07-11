@@ -6,6 +6,8 @@ struct PremiumUpgradeView: View {
     @StateObject private var subscriptionManager = SubscriptionManager.shared
     @State private var selectedProduct: Product?
     @State private var showingPurchaseAlert = false
+    @State private var showingPurchaseConfirmation = false
+    @State private var showingPurchaseSheet = false
     @State private var purchaseSuccess = false
     
     var body: some View {
@@ -30,7 +32,13 @@ struct PremiumUpgradeView: View {
                     PurchaseButtonView(
                         selectedProduct: selectedProduct,
                         isLoading: subscriptionManager.isLoading,
-                        onPurchase: purchase,
+                        onPurchase: {
+                            if selectedProduct != nil {
+                                showingPurchaseSheet = true
+                            } else {
+                                showingPurchaseConfirmation = true
+                            }
+                        },
                         onRestore: restore
                     )
                     
@@ -68,6 +76,29 @@ struct PremiumUpgradeView: View {
             }
         } message: {
             Text(subscriptionManager.errorMessage ?? "")
+        }
+        .alert("プランの確認", isPresented: $showingPurchaseConfirmation) {
+            Button("キャンセル", role: .cancel) { }
+            Button("購入する") {
+                purchase()
+            }
+        } message: {
+            if let product = selectedProduct {
+                let planType = product.id.contains("yearly") ? "年間プラン" : "月間プラン"
+                Text("\(planType) (\(product.displayPrice)) を購入しますか？\n\n購入後は自動更新されます。設定からいつでもキャンセル可能です。")
+            } else {
+                Text("プランを選択してください")
+            }
+        }
+        .sheet(isPresented: $showingPurchaseSheet) {
+            PurchaseConfirmationSheet(
+                selectedProduct: selectedProduct,
+                subscriptionManager: subscriptionManager,
+                onPurchase: purchase,
+                onCancel: {
+                    showingPurchaseSheet = false
+                }
+            )
         }
     }
     
@@ -628,6 +659,249 @@ struct BikeUpgradePromptView: View {
         .padding(Constants.Spacing.large)
         .sheet(isPresented: $showingPremiumView) {
             PremiumUpgradeView()
+        }
+    }
+}
+
+// MARK: - Purchase Confirmation Sheet
+
+struct PurchaseConfirmationSheet: View {
+    let selectedProduct: Product?
+    let subscriptionManager: SubscriptionManager
+    let onPurchase: () -> Void
+    let onCancel: () -> Void
+    
+    @Environment(\.dismiss) private var dismiss
+    
+    private var isYearlyPlan: Bool {
+        selectedProduct?.id.contains("yearly") ?? false
+    }
+    
+    private var planTitle: String {
+        isYearlyPlan ? "年間プラン" : "月間プラン"
+    }
+    
+    private var planPrice: String {
+        selectedProduct?.displayPrice ?? ""
+    }
+    
+    private var planPeriod: String {
+        isYearlyPlan ? "/年" : "/月"
+    }
+    
+    private var planBenefits: [String] {
+        let benefits = [
+            "無制限のバイク登録",
+            "広告なし",
+            "優先サポート",
+            "新機能のアーリーアクセス"
+        ]
+        
+        if isYearlyPlan {
+            return ["年間で約¥760節約"] + benefits
+        } else {
+            return benefits
+        }
+    }
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 30) {
+                    // ヘッダー
+                    VStack(spacing: 20) {
+                        ZStack {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: isYearlyPlan ? [.orange, .red] : [.blue, .purple]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 100, height: 100)
+                            
+                            Image(systemName: isYearlyPlan ? "crown.fill" : "sparkles")
+                                .font(.system(size: 40))
+                                .foregroundColor(.white)
+                        }
+                        
+                        VStack(spacing: 8) {
+                            Text("購入確認")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            
+                            if isYearlyPlan {
+                                Text("おすすめプラン")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.orange)
+                            }
+                        }
+                    }
+                    
+                    // プラン詳細
+                    VStack(spacing: 20) {
+                        HStack {
+                            Text("プラン")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        
+                        HStack {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(planTitle)
+                                    .font(.title3)
+                                    .fontWeight(.bold)
+                                
+                                if isYearlyPlan {
+                                    Text("2ヶ月分お得な年間プラン")
+                                        .font(.subheadline)
+                                        .foregroundColor(.green)
+                                        .fontWeight(.medium)
+                                } else {
+                                    Text("いつでもキャンセル可能")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            
+                            Spacer()
+                            
+                            VStack(alignment: .trailing, spacing: 4) {
+                                Text(planPrice)
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(isYearlyPlan ? .orange : .blue)
+                                
+                                Text(planPeriod)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                
+                                if isYearlyPlan {
+                                    Text("月額換算 ¥317")
+                                        .font(.caption)
+                                        .foregroundColor(.green)
+                                        .fontWeight(.medium)
+                                }
+                            }
+                        }
+                        .padding(Constants.Spacing.medium)
+                        .background(Constants.Colors.surfaceFallback)
+                        .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.large))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Constants.CornerRadius.large)
+                                .stroke(isYearlyPlan ? Color.orange : Color.blue, lineWidth: 1)
+                        )
+                    }
+                    
+                    // 特典一覧
+                    VStack(spacing: 15) {
+                        HStack {
+                            Text("含まれる特典")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        
+                        VStack(spacing: 12) {
+                            ForEach(Array(planBenefits.enumerated()), id: \.offset) { index, benefit in
+                                HStack {
+                                    Image(systemName: index == 0 && isYearlyPlan ? "tag.fill" : "checkmark.circle.fill")
+                                        .font(.title3)
+                                        .foregroundColor(index == 0 && isYearlyPlan ? .green : .blue)
+                                    
+                                    Text(benefit)
+                                        .font(.subheadline)
+                                        .fontWeight(index == 0 && isYearlyPlan ? .semibold : .regular)
+                                        .foregroundColor(index == 0 && isYearlyPlan ? .green : .primary)
+                                    
+                                    Spacer()
+                                }
+                                .padding(.horizontal, Constants.Spacing.medium)
+                                .padding(.vertical, Constants.Spacing.small)
+                                .background(
+                                    RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
+                                        .fill(index == 0 && isYearlyPlan ? Color.green.opacity(0.1) : Constants.Colors.surfaceFallback)
+                                )
+                            }
+                        }
+                    }
+                    
+                    // 重要な情報
+                    VStack(spacing: 12) {
+                        HStack {
+                            Image(systemName: "info.circle")
+                                .foregroundColor(.blue)
+                            Text("重要な情報")
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                            Spacer()
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("• 購入後は自動的に更新されます")
+                            Text("• キャンセルは次回更新日の24時間前まで可能です")
+                            Text("• 設定 > Apple ID > サブスクリプションから管理できます")
+                            Text("• 購入すると利用規約とプライバシーポリシーに同意したことになります")
+                        }
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    }
+                    .padding(Constants.Spacing.medium)
+                    .background(Color.blue.opacity(0.05))
+                    .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.medium))
+                    
+                    // 購入ボタン
+                    VStack(spacing: 15) {
+                        Button(action: {
+                            dismiss()
+                            onPurchase()
+                        }) {
+                            HStack {
+                                if subscriptionManager.isLoading {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                        .scaleEffect(0.8)
+                                } else {
+                                    Image(systemName: "creditcard.fill")
+                                    Text("\(planPrice)で購入する")
+                                }
+                            }
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: isYearlyPlan ? [.orange, .red] : [.blue, .purple]),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.large))
+                        }
+                        .disabled(subscriptionManager.isLoading)
+                        
+                        Button("キャンセル") {
+                            dismiss()
+                            onCancel()
+                        }
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    }
+                }
+                .padding(Constants.Spacing.medium)
+            }
+            .navigationTitle("プレミアムプラン")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("閉じる") {
+                        dismiss()
+                        onCancel()
+                    }
+                }
+            }
         }
     }
 }
