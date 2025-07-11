@@ -245,11 +245,11 @@ struct PlanComparisonView: View {
     @Binding var selectedProduct: Product?
     
     private var monthlyCost: Double {
-        monthlyProduct.price.doubleValue * 12
+        Double(truncating: monthlyProduct.price as NSNumber) * 12
     }
     
     private var yearlyCost: Double {
-        yearlyProduct.price.doubleValue
+        Double(truncating: yearlyProduct.price as NSNumber)
     }
     
     private var savings: Double {
@@ -380,14 +380,15 @@ struct PlanCardView: View {
             // 年間プランの月額換算を計算
             let yearlyPrice = product.price
             let monthlyEquivalent = yearlyPrice / 12
-            return String(format: "月額換算 ¥%.0f", monthlyEquivalent.doubleValue)
+            return String(format: "月額換算 ¥%.0f", Double(truncating: monthlyEquivalent as NSNumber))
         }
         return nil
     }
     
     private var savingsText: String? {
         if isYearlyPlan {
-            return "年間で約¥960節約"
+            // 月額¥380 × 12ヶ月 = ¥4,560 年間プランが¥3,800なら¥760節約
+            return "年間で約¥760節約"
         }
         return nil
     }

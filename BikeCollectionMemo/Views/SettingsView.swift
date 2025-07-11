@@ -416,7 +416,7 @@ struct FreeUserUpgradeView: View {
                 Spacer()
                 
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("月額¥480〜")
+                    Text("月額¥380〜")
                         .font(.caption)
                         .fontWeight(.semibold)
                         .foregroundColor(.orange)
