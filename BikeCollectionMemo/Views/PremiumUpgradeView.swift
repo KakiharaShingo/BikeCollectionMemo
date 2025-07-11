@@ -36,7 +36,9 @@ struct PremiumUpgradeView: View {
                             if selectedProduct != nil {
                                 showingPurchaseSheet = true
                             } else {
-                                showingPurchaseConfirmation = true
+                                // プランが選択されていない場合、年間プランをデフォルト選択して確認画面を表示
+                                selectedProduct = subscriptionManager.yearlyProduct()
+                                showingPurchaseSheet = true
                             }
                         },
                         onRestore: restore
@@ -78,17 +80,21 @@ struct PremiumUpgradeView: View {
             Text(subscriptionManager.errorMessage ?? "")
         }
         .alert("プランの確認", isPresented: $showingPurchaseConfirmation) {
-            Button("キャンセル", role: .cancel) { }
+            Button("キャンセル", role: .cancel) { 
+                // プラン未選択の場合はおすすめの年間プランを設定
+                if selectedProduct == nil {
+                    selectedProduct = subscriptionManager.yearlyProduct()
+                }
+            }
             Button("購入する") {
+                // プラン未選択の場合はおすすめの年間プランを設定
+                if selectedProduct == nil {
+                    selectedProduct = subscriptionManager.yearlyProduct()
+                }
                 purchase()
             }
         } message: {
-            if let product = selectedProduct {
-                let planType = product.id.contains("yearly") ? "年間プラン" : "月間プラン"
-                Text("\(planType) (\(product.displayPrice)) を購入しますか？\n\n購入後は自動更新されます。設定からいつでもキャンセル可能です。")
-            } else {
-                Text("プランを選択してください")
-            }
+            Text("まずプランを選択してから購入してください。おすすめは年間プランです。")
         }
         .sheet(isPresented: $showingPurchaseSheet) {
             PurchaseConfirmationSheet(
@@ -561,7 +567,7 @@ struct PurchaseButtonView: View {
                 )
                 .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.medium))
             }
-            .disabled(selectedProduct == nil || isLoading)
+            .disabled(isLoading)
             
             Button("購入履歴を復元", action: onRestore)
                 .font(.subheadline)
