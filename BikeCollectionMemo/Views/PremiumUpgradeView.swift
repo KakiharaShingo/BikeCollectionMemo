@@ -342,7 +342,7 @@ struct LegalLinksView: View {
             HStack(spacing: 20) {
                 Button("利用規約") {
                     // 利用規約を開く
-                    if let url = URL(string: "https://your-domain.com/terms") {
+                    if let url = URL(string: "https://kakiharashingo.github.io/BikeCollectionMemo/terms-of-service.html") {
                         UIApplication.shared.open(url)
                     }
                 }
@@ -351,7 +351,7 @@ struct LegalLinksView: View {
                 
                 Button("プライバシーポリシー") {
                     // プライバシーポリシーを開く
-                    if let url = URL(string: "https://your-domain.com/privacy") {
+                    if let url = URL(string: "https://kakiharashingo.github.io/BikeCollectionMemo/privacy-policy.html") {
                         UIApplication.shared.open(url)
                     }
                 }
