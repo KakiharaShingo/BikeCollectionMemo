@@ -3,6 +3,7 @@ import SafariServices
 
 struct SettingsView: View {
     @StateObject private var backupService = BackupService()
+    @StateObject private var subscriptionManager = SubscriptionManager.shared
     @State private var showingBackupAlert = false
     @State private var showingRestoreSheet = false
     @State private var showingSubscriptionSheet = false
@@ -38,19 +39,24 @@ struct SettingsView: View {
                 
                 // プレミアム機能セクション
                 Section("プレミアム機能") {
-                    SettingsRowView(
-                        icon: "crown.fill",
-                        title: "プレミアムプラン",
-                        subtitle: "無制限のバイク登録・広告なし",
-                        iconColor: .orange
-                    ) {
-                        showingSubscriptionSheet = true
+                    if subscriptionManager.isSubscribed {
+                        // プレミアムユーザー向け表示
+                        PremiumStatusView(subscriptionManager: subscriptionManager) {
+                            showingSubscriptionSheet = true
+                        }
+                    } else {
+                        // 無料ユーザー向け表示
+                        FreeUserUpgradeView(subscriptionManager: subscriptionManager) {
+                            showingSubscriptionSheet = true
+                        }
                     }
                 }
                 
-                // 広告設定セクション
-                Section("広告") {
-                    AdSettingsView()
+                // 広告設定セクション（無料ユーザーのみ表示）
+                if !subscriptionManager.isSubscribed {
+                    Section("広告") {
+                        AdSettingsView()
+                    }
                 }
                 
                 // サポートセクション
@@ -106,6 +112,12 @@ struct SettingsView: View {
             }
             .navigationTitle("設定")
         }
+        .onAppear {
+            Task {
+                await subscriptionManager.loadProducts()
+                await subscriptionManager.updateSubscriptionStatus()
+            }
+        }
         .alert("バックアップ", isPresented: $showingBackupAlert) {
             Button("キャンセル", role: .cancel) { }
             Button("バックアップ") {
@@ -118,7 +130,11 @@ struct SettingsView: View {
             RestoreDataSheet()
         }
         .sheet(isPresented: $showingSubscriptionSheet) {
-            SubscriptionSheet()
+            if subscriptionManager.isSubscribed {
+                PremiumManagementView()
+            } else {
+                PremiumUpgradeView()
+            }
         }
         .sheet(isPresented: $showingFeedbackSheet) {
             FeedbackSheet()
@@ -305,11 +321,309 @@ struct RestoreDataSheet: View {
     }
 }
 
-struct SubscriptionSheet: View {
-    @Environment(\.dismiss) private var dismiss
+// プレミアムユーザー向けステータス表示
+struct PremiumStatusView: View {
+    let subscriptionManager: SubscriptionManager
+    let onTap: () -> Void
     
     var body: some View {
-        PremiumUpgradeView()
+        Button(action: onTap) {
+            HStack(alignment: .center, spacing: Constants.Spacing.medium) {
+                // アイコン
+                ZStack {
+                    RoundedRectangle(cornerRadius: Constants.CornerRadius.small)
+                        .fill(
+                            LinearGradient(
+                                gradient: Gradient(colors: [.orange, .yellow]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 32, height: 32)
+                    
+                    Image(systemName: "crown.fill")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                }
+                
+                VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
+                    HStack {
+                        Text("プレミアムプラン")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                        
+                        Text("アクティブ")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(Color.green)
+                            .clipShape(Capsule())
+                    }
+                    
+                    Text("すべての機能が利用可能")
+                        .font(.subheadline)
+                        .foregroundColor(Constants.Colors.secondaryFallback)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.subheadline)
+                    .foregroundColor(Constants.Colors.secondaryFallback)
+            }
+            .padding(.vertical, Constants.Spacing.extraSmall)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+// 無料ユーザー向けアップグレード促進表示
+struct FreeUserUpgradeView: View {
+    let subscriptionManager: SubscriptionManager
+    let onTap: () -> Void
+    
+    var body: some View {
+        Button(action: onTap) {
+            HStack(alignment: .center, spacing: Constants.Spacing.medium) {
+                // アイコン
+                Image(systemName: "crown.fill")
+                    .font(.title3)
+                    .foregroundColor(.white)
+                    .frame(width: 32, height: 32)
+                    .background(.orange)
+                    .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.small))
+                
+                VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
+                    HStack {
+                        Text("プレミアムプラン")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                        
+                        Text("アップグレード")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(.orange)
+                            .clipShape(Capsule())
+                    }
+                    
+                    Text("無制限のバイク登録・広告なし")
+                        .font(.subheadline)
+                        .foregroundColor(Constants.Colors.secondaryFallback)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text("月額¥480〜")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.orange)
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundColor(Constants.Colors.secondaryFallback)
+                }
+            }
+            .padding(.vertical, Constants.Spacing.extraSmall)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+// プレミアムユーザー向け管理画面
+struct PremiumManagementView: View {
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var subscriptionManager = SubscriptionManager.shared
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 30) {
+                    // ヘッダー
+                    VStack(spacing: 20) {
+                        ZStack {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [.orange, .yellow]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 100, height: 100)
+                            
+                            Image(systemName: "crown.fill")
+                                .font(.system(size: 50))
+                                .foregroundColor(.white)
+                        }
+                        
+                        VStack(spacing: 8) {
+                            Text("プレミアムプラン")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            
+                            HStack {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.green)
+                                Text("アクティブ")
+                                    .foregroundColor(.green)
+                                    .fontWeight(.medium)
+                            }
+                        }
+                    }
+                    
+                    // プレミアム特典
+                    VStack(spacing: 15) {
+                        Text("利用中の特典")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        VStack(spacing: 12) {
+                            PremiumFeatureRow(
+                                icon: "infinity",
+                                title: "無制限のバイク登録",
+                                description: "好きなだけバイクを登録できます",
+                                iconColor: .blue
+                            )
+                            
+                            PremiumFeatureRow(
+                                icon: "eye.slash.fill",
+                                title: "広告なし",
+                                description: "すっきりした画面で快適にご利用いただけます",
+                                iconColor: .green
+                            )
+                            
+                            PremiumFeatureRow(
+                                icon: "star.fill",
+                                title: "優先サポート",
+                                description: "お問い合わせに優先的に対応いたします",
+                                iconColor: .purple
+                            )
+                            
+                            PremiumFeatureRow(
+                                icon: "sparkles",
+                                title: "新機能アーリーアクセス",
+                                description: "新機能を誰よりも早くお試しいただけます",
+                                iconColor: .orange
+                            )
+                        }
+                    }
+                    
+                    // 管理ボタン
+                    VStack(spacing: 15) {
+                        Button(action: {
+                            if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
+                                UIApplication.shared.open(url)
+                            }
+                        }) {
+                            HStack {
+                                Image(systemName: "gear")
+                                Text("サブスクリプションを管理")
+                            }
+                            .font(.headline)
+                            .foregroundColor(.blue)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(Color.blue.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.medium))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
+                                    .stroke(Color.blue, lineWidth: 1)
+                            )
+                        }
+                        
+                        Button("購入履歴を復元") {
+                            Task {
+                                await subscriptionManager.restorePurchases()
+                            }
+                        }
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    }
+                    
+                    // 法的リンク
+                    VStack(spacing: 8) {
+                        HStack(spacing: 20) {
+                            Button("利用規約") {
+                                if let url = URL(string: "https://kakiharashingo.github.io/BikeCollectionMemo/terms-of-service.html") {
+                                    UIApplication.shared.open(url)
+                                }
+                            }
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                            
+                            Button("プライバシーポリシー") {
+                                if let url = URL(string: "https://kakiharashingo.github.io/BikeCollectionMemo/privacy-policy.html") {
+                                    UIApplication.shared.open(url)
+                                }
+                            }
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                        }
+                        
+                        Text("いつもBikeCollectionMemoをご利用いただき、ありがとうございます！")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                }
+                .padding(Constants.Spacing.medium)
+            }
+            .navigationTitle("プレミアムプラン")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("完了") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct PremiumFeatureRow: View {
+    let icon: String
+    let title: String
+    let description: String
+    let iconColor: Color
+    
+    var body: some View {
+        HStack(spacing: Constants.Spacing.medium) {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundColor(.white)
+                .frame(width: 32, height: 32)
+                .background(iconColor)
+                .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.small))
+            
+            VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
+                Text(title)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundColor(.black)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundColor(Constants.Colors.secondaryFallback)
+            }
+            
+            Spacer()
+            
+            Image(systemName: "checkmark.circle.fill")
+                .font(.title3)
+                .foregroundColor(.green)
+        }
+        .padding(Constants.Spacing.medium)
+        .background(Constants.Colors.surfaceFallback)
+        .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.medium))
     }
 }
 
