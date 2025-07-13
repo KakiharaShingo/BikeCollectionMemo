@@ -33,10 +33,12 @@ title: BikeCollectionMemo
 
 近日公開予定
 
-## サポート
+## サポート・お問い合わせ
 
-ご質問やお問い合わせは[こちら](mailto:support@example.com)まで。
+- [サポート・よくある質問](support.md)
+- メール: sk.shingo.10@gmail.com
 
-## プライバシーポリシー
+## 重要な情報
 
-[プライバシーポリシー](privacy-policy.html)をご確認ください。
+- [プライバシーポリシー](privacy-policy.md)
+- [利用規約](terms-of-service.md)
