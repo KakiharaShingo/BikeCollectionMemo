@@ -3,13 +3,9 @@ layout: default
 title: サポート - BikeCollectionMemo
 ---
 
-<div class="content-card fade-in-up">
-  <div style="text-align: center; margin-bottom: 3rem;">
-    <div style="font-size: 4rem; margin-bottom: 1rem;">🛟</div>
-    <h1 style="color: #2563eb; margin-bottom: 1rem;">サポート</h1>
-    <p style="color: #6b7280;">BikeCollectionMemoをご利用いただき、ありがとうございます。<br>よくあるご質問への回答と、お問い合わせ方法をご案内しています。</p>
-  </div>
-</div>
+# サポート
+
+BikeCollectionMemoをご利用いただき、ありがとうございます。こちらのページでは、よくあるご質問への回答と、お問い合わせ方法をご案内しています。
 
 ## よくあるご質問（FAQ）
 

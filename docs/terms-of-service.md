@@ -3,18 +3,11 @@ layout: default
 title: 利用規約 - BikeCollectionMemo
 ---
 
-<div class="content-card fade-in-up">
-  <div style="text-align: center; margin-bottom: 3rem;">
-    <div style="font-size: 4rem; margin-bottom: 1rem;">📄</div>
-    <h1 style="color: #2563eb; margin-bottom: 1rem;">利用規約</h1>
-    <p style="color: #6b7280;">最終更新日: 2025年7月13日</p>
-  </div>
-  
-  <div class="alert alert-info">
-    <strong>重要なお知らせ</strong><br>
-    本利用規約（以下「本規約」）は、BikeCollectionMemo（以下「本アプリ」）の利用に関する条件を定めるものです。本アプリをご利用になる前に、本規約を必ずお読みください。
-  </div>
-</div>
+# 利用規約
+
+最終更新日: 2025年7月13日
+
+本利用規約（以下「本規約」）は、BikeCollectionMemo（以下「本アプリ」）の利用に関する条件を定めるものです。本アプリをご利用になる前に、本規約を必ずお読みください。
 
 ## 第1条（適用）
 

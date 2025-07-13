@@ -3,373 +3,96 @@
 
 @import "{{ site.theme }}";
 
-/* カスタムCSS */
-:root {
-  --primary-color: #2563eb;
-  --secondary-color: #1e40af;
-  --accent-color: #f59e0b;
-  --success-color: #10b981;
-  --danger-color: #ef4444;
-  --dark-color: #1f2937;
-  --light-color: #f8fafc;
-  --border-color: #e5e7eb;
-  --text-primary: #1f2937;
-  --text-secondary: #6b7280;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-/* フォント設定 */
+/* シンプルで読みやすいカスタムCSS */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
-  color: var(--text-primary);
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
+  color: #333;
 }
 
-/* ヘッダー */
 .site-header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: var(--shadow);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid #e1e4e8;
 }
 
 .site-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary-color) !important;
+  color: #0366d6 !important;
   text-decoration: none !important;
-}
-
-/* メインコンテンツ */
-.page-content {
-  padding: 2rem 0;
-}
-
-.wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-/* カード型レイアウト */
-.content-card {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  margin: 2rem 0;
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border-color);
-}
-
-/* ヒーローセクション */
-.hero {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-  color: white;
-  padding: 4rem 0;
-  text-align: center;
-  border-radius: 16px;
-  margin: 2rem 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="25" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="25" r="1" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-  pointer-events: none;
-}
-
-.hero h1 {
-  font-size: 3rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-  position: relative;
-  z-index: 1;
-}
-
-.hero p {
-  font-size: 1.25rem;
-  opacity: 0.9;
-  margin-bottom: 2rem;
-  position: relative;
-  z-index: 1;
-}
-
-/* 機能グリッド */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin: 3rem 0;
-}
-
-.feature-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.feature-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
-}
-
-.feature-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  display: block;
-}
-
-.feature-card h3 {
-  color: var(--text-primary);
-  margin-bottom: 1rem;
   font-weight: 600;
 }
 
-.feature-card p {
-  color: var(--text-secondary);
-  line-height: 1.6;
+/* 少し整理されたスタイル */
+h1, h2, h3 {
+  color: #24292e;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-/* ボタンスタイル */
-.btn {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
+h1 {
+  border-bottom: 2px solid #eaecef;
+  padding-bottom: 0.3rem;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-  text-decoration: none;
-  color: white;
-}
-
-.btn-outline {
-  border: 2px solid var(--primary-color);
-  color: var(--primary-color);
-  background: transparent;
-}
-
-.btn-outline:hover {
-  background: var(--primary-color);
-  color: white;
-  text-decoration: none;
+h2 {
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 0.2rem;
 }
 
 /* リンクスタイル */
-.nav-links {
-  display: flex;
-  gap: 1rem;
-  margin: 2rem 0;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.nav-links a {
-  padding: 0.5rem 1rem;
-  background: white;
-  color: var(--primary-color);
+a {
+  color: #0366d6;
   text-decoration: none;
-  border-radius: 6px;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-  font-weight: 500;
 }
 
-.nav-links a:hover {
-  background: var(--primary-color);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
+a:hover {
+  text-decoration: underline;
 }
 
-/* テーブルスタイル */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 2rem 0;
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-
-th, td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
-}
-
-th {
-  background: var(--light-color);
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-/* アイコンスタイル */
-.icon {
-  display: inline-block;
-  margin-right: 0.5rem;
-}
-
-/* FAQ スタイル */
-.faq-item {
-  background: white;
-  border-radius: 8px;
-  margin: 1rem 0;
-  padding: 1.5rem;
-  box-shadow: var(--shadow);
-  border-left: 4px solid var(--accent-color);
-}
-
-.faq-question {
-  font-weight: 600;
-  color: var(--text-primary);
+/* リストスタイル */
+ul li {
   margin-bottom: 0.5rem;
 }
 
-.faq-answer {
-  color: var(--text-secondary);
-  line-height: 1.6;
+/* コードブロック */
+code {
+  background: #f6f8fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.9em;
 }
 
-/* アラートスタイル */
-.alert {
-  padding: 1rem;
-  border-radius: 8px;
+/* テーブル */
+table {
+  border-collapse: collapse;
+  width: 100%;
   margin: 1rem 0;
-  border-left: 4px solid;
 }
 
-.alert-info {
-  background: #eff6ff;
-  border-color: var(--primary-color);
-  color: var(--primary-color);
+th, td {
+  border: 1px solid #d0d7de;
+  padding: 0.5rem 1rem;
+  text-align: left;
 }
 
-.alert-warning {
-  background: #fffbeb;
-  border-color: var(--accent-color);
-  color: #92400e;
+th {
+  background: #f6f8fa;
+  font-weight: 600;
 }
 
-.alert-success {
-  background: #ecfdf5;
-  border-color: var(--success-color);
-  color: #065f46;
+/* 引用 */
+blockquote {
+  border-left: 4px solid #d0d7de;
+  padding-left: 1rem;
+  margin-left: 0;
+  color: #656d76;
 }
 
 /* フッター */
 .site-footer {
-  background: var(--dark-color);
-  color: white;
+  background: #f6f8fa;
+  border-top: 1px solid #d0d7de;
+  color: #656d76;
   text-align: center;
   padding: 2rem 0;
-  margin-top: 4rem;
-}
-
-.site-footer a {
-  color: white;
-  text-decoration: none;
-}
-
-.site-footer a:hover {
-  color: var(--accent-color);
-}
-
-/* レスポンシブ */
-@media (max-width: 768px) {
-  .hero h1 {
-    font-size: 2rem;
-  }
-  
-  .hero p {
-    font-size: 1rem;
-  }
-  
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .content-card {
-    padding: 1.5rem;
-    margin: 1rem 0;
-  }
-  
-  .nav-links {
-    flex-direction: column;
-    align-items: center;
-  }
-}
-
-/* アニメーション */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-in-up {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-/* スクロールバーカスタマイズ */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--light-color);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-color);
+  margin-top: 3rem;
 }
