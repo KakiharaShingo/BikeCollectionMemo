@@ -119,6 +119,6 @@ struct Constants {
     // 開発設定
     struct Development {
         // 本番リリース時にfalseに変更
-        static let showDeveloperSettings = true
+        static let showDeveloperSettings = false
     }
 }
