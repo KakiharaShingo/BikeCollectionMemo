@@ -16,6 +16,7 @@ class AdMobManager: NSObject, ObservableObject {
     
     @Published var isAdLoaded = true
     @Published var showAds = true
+    @Published var enableInterstitialAds = false // インタースティシャル広告の有効/無効制御
     
     private let subscriptionManager = SubscriptionManager.shared
     private var cancellables = Set<AnyCancellable>()
@@ -51,25 +52,35 @@ class AdMobManager: NSObject, ObservableObject {
     // MARK: - Mock Interstitial Ads
     
     func showInterstitialAd() {
-        guard shouldShowAds() else { return }
+        guard shouldShowAds() && enableInterstitialAds else { return }
         print("Mock: Showing interstitial ad")
     }
     
     func showInterstitialAdWithCooldown() {
-        guard shouldShowAds() else { return }
+        guard shouldShowAds() && enableInterstitialAds else { return }
         print("Mock: Showing interstitial ad with cooldown")
     }
     
     // MARK: - Mock Rewarded Ads
     
     func showRewardedAd(onReward: @escaping () -> Void) {
-        guard shouldShowAds() else { return }
+        guard shouldShowAds() && enableInterstitialAds else { return }
         print("Mock: Showing rewarded ad")
         
         // Simulate reward after delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             onReward()
         }
+    }
+    
+    // MARK: - Admin Controls
+    
+    func enableInterstitialAdvertising() {
+        enableInterstitialAds = true
+    }
+    
+    func disableInterstitialAdvertising() {
+        enableInterstitialAds = false
     }
 }
 
