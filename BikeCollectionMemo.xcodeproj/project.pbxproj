@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		28AA08192E0BE4AB00B718BC /* BikeCollectionMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BikeCollectionMemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		28AA08262E0BE4AC00B718BC /* BikeCollectionMemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BikeCollectionMemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		28AA08302E0BE4AC00B718BC /* BikeCollectionMemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BikeCollectionMemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		28AA08192E0BE4AB00B718BC /* BikeCollectionMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = BikeCollectionMemo.app; path = "モトメモ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		28AA08262E0BE4AC00B718BC /* BikeCollectionMemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BikeCollectionMemoTests.xctest; path = "モトメモ.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		28AA08302E0BE4AC00B718BC /* BikeCollectionMemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BikeCollectionMemoUITests.xctest; path = "モトメモ.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */

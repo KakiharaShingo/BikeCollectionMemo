@@ -12,24 +12,43 @@ struct BikeListView: View {
     @StateObject private var subscriptionManager = SubscriptionManager.shared
     @State private var showingAddBike = false
     @State private var showingUpgradePrompt = false
+    @State private var showingBikeSelection = false
     @State private var searchText = ""
     @State private var isLoading = false
     
     var filteredBikes: [Bike] {
+        let searchFiltered: [Bike]
         if searchText.isEmpty {
-            return Array(bikes)
+            searchFiltered = Array(bikes)
         } else {
-            return bikes.filter { bike in
+            searchFiltered = bikes.filter { bike in
                 bike.wrappedName.localizedCaseInsensitiveContains(searchText) ||
                 bike.wrappedManufacturer.localizedCaseInsensitiveContains(searchText) ||
                 bike.wrappedModel.localizedCaseInsensitiveContains(searchText)
             }
         }
+        
+        // サブスクリプション状態に基づいてフィルタリング
+        return subscriptionManager.getFilteredBikes(from: searchFiltered) as! [Bike]
     }
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
+                // バイク選択を促すバナー
+                if subscriptionManager.shouldShowBikeSelectionUI(bikeCount: bikes.count) {
+                    BikeSelectionBanner {
+                        showingBikeSelection = true
+                    }
+                }
+                
+                // 非プレミアムユーザーの制限通知
+                if !subscriptionManager.isSubscribed && bikes.count > 1 && subscriptionManager.selectedBikeID != nil {
+                    NonPremiumLimitBanner {
+                        showingBikeSelection = true
+                    }
+                }
+                
                 if bikes.isEmpty && !isLoading {
                     EmptyBikeView(showingAddBike: $showingAddBike)
                 } else if !filteredBikes.isEmpty {
@@ -88,6 +107,9 @@ struct BikeListView: View {
         }
         .sheet(isPresented: $showingUpgradePrompt) {
             BikeUpgradePromptView()
+        }
+        .sheet(isPresented: $showingBikeSelection) {
+            BikeSelectionView(bikes: Array(bikes))
         }
     }
 }
@@ -255,6 +277,102 @@ struct AsyncImage: View {
             content(Image(uiImage: uiImage))
         } else {
             placeholder()
+        }
+    }
+}
+
+// MARK: - Banner Components
+
+struct BikeSelectionBanner: View {
+    let onTap: () -> Void
+    
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: Constants.Spacing.medium) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.title2)
+                    .foregroundColor(.orange)
+                
+                VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
+                    Text("表示するバイクを選択してください")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.primary)
+                    
+                    Text("無料プランでは1台のみ表示できます")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding(Constants.Spacing.medium)
+            .background(Color.orange.opacity(0.1))
+            .overlay(
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(Color.orange.opacity(0.3)),
+                alignment: .bottom
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
+struct NonPremiumLimitBanner: View {
+    let onTap: () -> Void
+    @State private var showingUpgrade = false
+    
+    var body: some View {
+        HStack(spacing: Constants.Spacing.medium) {
+            Image(systemName: "info.circle.fill")
+                .font(.title2)
+                .foregroundColor(.blue)
+            
+            VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
+                Text("1台のみ表示中（無料プラン）")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundColor(.primary)
+                
+                Text("他のバイクを表示する場合はタップ")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            Button("プレミアム") {
+                showingUpgrade = true
+            }
+            .font(.caption)
+            .fontWeight(.medium)
+            .foregroundColor(.white)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(Constants.Colors.primaryFallback)
+            .clipShape(Capsule())
+            
+            Button(action: onTap) {
+                Image(systemName: "arrow.triangle.2.circlepath")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(Constants.Spacing.medium)
+        .background(Color.blue.opacity(0.05))
+        .overlay(
+            Rectangle()
+                .frame(height: 1)
+                .foregroundColor(Color.blue.opacity(0.2)),
+            alignment: .bottom
+        )
+        .sheet(isPresented: $showingUpgrade) {
+            PremiumUpgradeView()
         }
     }
 }

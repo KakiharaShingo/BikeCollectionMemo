@@ -13,6 +13,7 @@ struct MaintenanceRecordListView: View {
         animation: .default)
     private var bikes: FetchedResults<Bike>
     
+    @StateObject private var subscriptionManager = SubscriptionManager.shared
     @State private var searchText = ""
     @State private var selectedBike: Bike?
     @State private var showingFilterSheet = false
@@ -22,7 +23,15 @@ struct MaintenanceRecordListView: View {
     var filteredRecords: [MaintenanceRecord] {
         var filtered = Array(maintenanceRecords)
         
-        // バイクフィルター
+        // サブスクリプション状態に基づくバイクフィルター（非プレミアムユーザー）
+        if !subscriptionManager.isSubscribed {
+            let allowedBikes = subscriptionManager.getFilteredBikes(from: bikes) as! [Bike]
+            if let allowedBike = allowedBikes.first {
+                filtered = filtered.filter { $0.bike == allowedBike }
+            }
+        }
+        
+        // 手動バイクフィルター（プレミアムユーザーが選択した場合）
         if let selectedBike = selectedBike {
             filtered = filtered.filter { $0.bike == selectedBike }
         }

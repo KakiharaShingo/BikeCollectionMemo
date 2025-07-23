@@ -17,6 +17,7 @@ struct PartsListView: View {
         animation: .default)
     private var bikes: FetchedResults<Bike>
     
+    @StateObject private var subscriptionManager = SubscriptionManager.shared
     @State private var searchText = ""
     @State private var selectedBike: Bike?
     @State private var showingFilterSheet = false
@@ -29,12 +30,20 @@ struct PartsListView: View {
     var filteredParts: [PartsMemo] {
         var filtered = Array(partsMemos)
         
+        // サブスクリプション状態に基づくバイクフィルター（非プレミアムユーザー）
+        if !subscriptionManager.isSubscribed {
+            let allowedBikes = subscriptionManager.getFilteredBikes(from: bikes) as! [Bike]
+            if let allowedBike = allowedBikes.first {
+                filtered = filtered.filter { $0.bike == allowedBike }
+            }
+        }
+        
         // 購入状態フィルター（削除予定のアイテムは一時的に表示）
         if showOnlyUnpurchased {
             filtered = filtered.filter { !$0.isPurchased || itemsToDelete.contains($0.objectID) }
         }
         
-        // バイクフィルター
+        // 手動バイクフィルター（プレミアムユーザーが選択した場合）
         if let selectedBike = selectedBike {
             filtered = filtered.filter { $0.bike == selectedBike }
         }

@@ -20,6 +20,17 @@ class SubscriptionManager: ObservableObject {
     // 無料プランでのバイク登録制限
     private let freePlanBikeLimit = 1
     
+    // 選択されたバイクID（非プレミアム時に表示するバイク）
+    @Published var selectedBikeID: String? {
+        didSet {
+            if let selectedBikeID = selectedBikeID {
+                UserDefaults.standard.set(selectedBikeID, forKey: "selectedBikeID")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "selectedBikeID")
+            }
+        }
+    }
+    
     private var updateListenerTask: Task<Void, Error>?
     
     enum SubscriptionStatus {
@@ -30,6 +41,9 @@ class SubscriptionManager: ObservableObject {
     }
     
     init() {
+        // 保存された選択バイクIDを読み込み
+        self.selectedBikeID = UserDefaults.standard.string(forKey: "selectedBikeID")
+        
         updateListenerTask = listenForTransactions()
         Task {
             await loadProducts()
@@ -178,6 +192,40 @@ class SubscriptionManager: ObservableObject {
     
     func shouldShowUpgradePrompt(currentBikeCount: Int) -> Bool {
         return !canAddMoreBikes(currentBikeCount: currentBikeCount) && !isSubscribed
+    }
+    
+    // MARK: - Bike Selection Management
+    
+    func shouldShowBikeSelectionUI(bikeCount: Int) -> Bool {
+        return !isSubscribed && bikeCount > freePlanBikeLimit && selectedBikeID == nil
+    }
+    
+    func getFilteredBikes<T: Collection>(from bikes: T) -> [T.Element] where T.Element: Any {
+        // プレミアムユーザーは全てのバイクを表示
+        if isSubscribed {
+            return Array(bikes)
+        }
+        
+        // 非プレミアムユーザーで選択されたバイクがある場合
+        if let selectedBikeID = selectedBikeID {
+            return Array(bikes).filter { bike in
+                if let bike = bike as? Bike {
+                    return bike.id?.uuidString == selectedBikeID
+                }
+                return false
+            }
+        }
+        
+        // 選択されたバイクがない場合は最初の1台のみ
+        return Array(bikes.prefix(freePlanBikeLimit))
+    }
+    
+    func selectBike(bikeID: String) {
+        selectedBikeID = bikeID
+    }
+    
+    func clearSelectedBike() {
+        selectedBikeID = nil
     }
     
     var isSubscribed: Bool {
