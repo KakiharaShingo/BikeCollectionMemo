@@ -93,7 +93,7 @@ struct HeaderSection: View {
                 Text(record.wrappedCategory)
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 if !record.wrappedSubcategory.isEmpty {
                     Text(record.wrappedSubcategory)
@@ -103,7 +103,7 @@ struct HeaderSection: View {
                 
                 Text(record.wrappedItem)
                     .font(.body)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                     .multilineTextAlignment(.center)
             }
         }
@@ -205,14 +205,14 @@ struct NotesSection: View {
                 
                 Text("メモ")
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Spacer()
             }
             
             Text(record.wrappedNotes)
                 .font(.body)
-                .foregroundColor(.black)
+                .foregroundColor(.primary)
                 .padding(Constants.Spacing.medium)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Constants.Colors.surfaceFallback)
@@ -232,7 +232,7 @@ struct RelatedBikeInfoSection: View {
                 
                 Text("対象バイク")
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Spacer()
             }
@@ -258,7 +258,7 @@ struct RelatedBikeInfoSection: View {
                         Text(bike.wrappedName)
                             .font(.subheadline)
                             .fontWeight(.medium)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         Text("\(bike.wrappedManufacturer) \(bike.wrappedModel)")
                             .font(.caption)
@@ -297,7 +297,7 @@ struct PhotosSection: View {
                 
                 Text("写真 (\(photos.count)枚)")
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Spacer()
             }

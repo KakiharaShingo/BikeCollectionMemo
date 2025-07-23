@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "28AA08182E0BE4AB00B718BC"
-               BuildableName = "BikeCollectionMemo.app"
+               BuildableName = "&#x30e2;&#x30c8;&#x30e1;&#x30e2;.app"
                BlueprintName = "BikeCollectionMemo"
                ReferencedContainer = "container:BikeCollectionMemo.xcodeproj">
             </BuildableReference>
@@ -36,7 +36,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "28AA08252E0BE4AC00B718BC"
-               BuildableName = "BikeCollectionMemoTests.xctest"
+               BuildableName = "&#x30e2;&#x30c8;&#x30e1;&#x30e2;.xctest"
                BlueprintName = "BikeCollectionMemoTests"
                ReferencedContainer = "container:BikeCollectionMemo.xcodeproj">
             </BuildableReference>
@@ -47,7 +47,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "28AA082F2E0BE4AC00B718BC"
-               BuildableName = "BikeCollectionMemoUITests.xctest"
+               BuildableName = "&#x30e2;&#x30c8;&#x30e1;&#x30e2;.xctest"
                BlueprintName = "BikeCollectionMemoUITests"
                ReferencedContainer = "container:BikeCollectionMemo.xcodeproj">
             </BuildableReference>
@@ -55,7 +55,7 @@
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -69,7 +69,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "28AA08182E0BE4AB00B718BC"
-            BuildableName = "BikeCollectionMemo.app"
+            BuildableName = "&#x30e2;&#x30c8;&#x30e1;&#x30e2;.app"
             BlueprintName = "BikeCollectionMemo"
             ReferencedContainer = "container:BikeCollectionMemo.xcodeproj">
          </BuildableReference>
@@ -86,7 +86,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "28AA08182E0BE4AB00B718BC"
-            BuildableName = "BikeCollectionMemo.app"
+            BuildableName = "&#x30e2;&#x30c8;&#x30e1;&#x30e2;.app"
             BlueprintName = "BikeCollectionMemo"
             ReferencedContainer = "container:BikeCollectionMemo.xcodeproj">
          </BuildableReference>

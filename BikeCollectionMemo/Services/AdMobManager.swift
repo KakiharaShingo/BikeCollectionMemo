@@ -2,13 +2,17 @@ import Foundation
 import SwiftUI
 import Combine
 
-// Temporary mock implementation for AdMob functionality
-// To use real GoogleMobileAds, add the SDK via Swift Package Manager:
-// https://github.com/googleads/swift-package-manager-google-mobile-ads
+// Mock implementation for AdMob functionality
+// TODO: Add GoogleMobileAds SDK for production use
 
 @MainActor
 class AdMobManager: NSObject, ObservableObject {
     static let shared = AdMobManager()
+    
+    // Ad Unit IDs (for future use)
+    private let appID = "ca-app-pub-7155393284008150~6824903344"
+    private let bannerAdUnitID = "ca-app-pub-7155393284008150/6336946049"
+    private let interstitialAdUnitID = "ca-app-pub-7155393284008150/1310698697"
     
     @Published var isAdLoaded = true
     @Published var showAds = true
@@ -87,9 +91,18 @@ struct BannerAdView: View {
                     .fill(Color.gray.opacity(0.1))
                     .frame(height: Self.bannerHeight)
                     .overlay(
-                        Text("広告スペース (Mock)")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                        HStack {
+                            Image(systemName: "megaphone")
+                                .foregroundColor(.orange)
+                            Text("広告スペース (Mock)")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("AdMob ID: 6336946049")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.horizontal, 8)
                     )
             }
             .background(Color(UIColor.systemBackground))

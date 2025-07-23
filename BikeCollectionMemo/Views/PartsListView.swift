@@ -272,7 +272,7 @@ struct PartsRowView: View {
                     Text(part.wrappedPartName)
                         .font(.title3)
                         .fontWeight(.semibold)
-                        .foregroundColor(part.isPurchased ? Constants.Colors.secondaryFallback : .black)
+                        .foregroundColor(part.isPurchased ? Constants.Colors.secondaryFallback : .primary)
                         .strikethrough(part.isPurchased)
                     
                     Spacer()
@@ -287,7 +287,7 @@ struct PartsRowView: View {
                 if !part.wrappedPartNumber.isEmpty {
                     Text("品番: \(part.wrappedPartNumber)")
                         .font(.caption)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                 }
                 
                 if let bike = part.bike {
@@ -298,7 +298,7 @@ struct PartsRowView: View {
                         
                         Text(bike.wrappedName)
                             .font(.caption)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         Spacer()
                         
@@ -312,7 +312,7 @@ struct PartsRowView: View {
                 if !part.wrappedDescription.isEmpty {
                     Text(part.wrappedDescription)
                         .font(.caption)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                         .lineLimit(2)
                 }
             }
@@ -368,7 +368,7 @@ struct EmptyPartsView: View {
                 Text("部品メモがありません")
                     .font(.title)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Text("バイクの詳細画面から\n必要な部品をメモしてください")
                     .font(.headline)

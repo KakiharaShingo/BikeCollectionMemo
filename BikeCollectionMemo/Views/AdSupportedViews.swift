@@ -12,15 +12,13 @@ struct AdSupportedView<Content: View>: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // 広告を上部に移動（現在は非表示）
-            if false && adMobManager.shouldShowAds() {
-                SmartBannerAdView()
-                    .frame(height: BannerAdView.bannerHeight)
-            }
-            
             content
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .clipped()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            // バナー広告を画面下部に表示
+            if adMobManager.shouldShowAds() {
+                BannerAdView()
+            }
         }
     }
 }

@@ -491,7 +491,7 @@ struct PlanCardView: View {
                             Text(planTitle)
                                 .font(.title3)
                                 .fontWeight(.bold)
-                                .foregroundColor(.black)
+                                .foregroundColor(.primary)
                             
                             if isYearlyPlan {
                                 Text("おすすめ")
@@ -522,7 +522,7 @@ struct PlanCardView: View {
                         Text(product.displayPrice)
                             .font(.title2)
                             .fontWeight(.bold)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         Text(isYearlyPlan ? "/年" : "/月")
                             .font(.caption)
@@ -1040,7 +1040,7 @@ struct MockPlanCardView: View {
                             Text(title)
                                 .font(.title3)
                                 .fontWeight(.bold)
-                                .foregroundColor(.black)
+                                .foregroundColor(.primary)
                             
                             if isYearly {
                                 Text("おすすめ")
@@ -1071,7 +1071,7 @@ struct MockPlanCardView: View {
                         Text(price)
                             .font(.title2)
                             .fontWeight(.bold)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         Text(period)
                             .font(.caption)

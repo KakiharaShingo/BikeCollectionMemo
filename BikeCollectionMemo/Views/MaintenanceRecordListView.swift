@@ -160,7 +160,7 @@ struct MaintenanceRecordRowView: View {
                     Text(record.wrappedCategory)
                         .font(.title3)
                         .fontWeight(.semibold)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
                     if !record.wrappedSubcategory.isEmpty {
@@ -189,7 +189,7 @@ struct MaintenanceRecordRowView: View {
             
             Text(record.wrappedItem)
                 .font(.body)
-                .foregroundColor(.black)
+                .foregroundColor(.primary)
             
             if let bike = record.bike {
                 HStack {
@@ -233,7 +233,7 @@ struct EmptyMaintenanceView: View {
                 Text("整備記録がありません")
                     .font(.title)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Text("バイクの詳細画面から\n整備記録を追加してください")
                     .font(.headline)
@@ -260,7 +260,7 @@ struct FilterBikeSheet: View {
                 }) {
                     HStack {
                         Text("すべてのバイク")
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         Spacer()
                         if selectedBike == nil {
                             Image(systemName: "checkmark")
@@ -276,7 +276,7 @@ struct FilterBikeSheet: View {
                     }) {
                         HStack {
                             Text(bike.wrappedName)
-                                .foregroundColor(.black)
+                                .foregroundColor(.primary)
                             Spacer()
                             if selectedBike == bike {
                                 Image(systemName: "checkmark")

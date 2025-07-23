@@ -193,7 +193,7 @@ struct EmptyMaintenanceHistoryView: View {
                 Text("整備記録がありません")
                     .font(.title3)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Text("最初の整備記録を\n追加してみましょう")
                     .font(.body)

@@ -303,7 +303,7 @@ struct SettingsRowContentView: View {
             VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
                 Text(title)
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 if let subtitle = subtitle {
@@ -344,7 +344,7 @@ struct RestoreDataSheet: View {
                     Text("データを復元")
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                     
                     Text("以前にエクスポートしたバックアップフォルダを選択して、データを復元できます。\n\n※ 現在のデータは全て削除されます。")
                         .font(.body)
@@ -449,7 +449,7 @@ struct PremiumStatusView: View {
                     HStack {
                         Text("プレミアムプラン")
                             .font(.headline)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         Text("アクティブ")
                             .font(.caption)
@@ -499,7 +499,7 @@ struct FreeUserUpgradeView: View {
                     HStack {
                         Text("プレミアムプラン")
                             .font(.headline)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         Text("アップグレード")
                             .font(.caption)
@@ -707,7 +707,7 @@ struct PremiumFeatureRow: View {
                 Text(title)
                     .font(.subheadline)
                     .fontWeight(.medium)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Text(description)
                     .font(.caption)
@@ -768,7 +768,7 @@ struct FeedbackSheet: View {
                         
                         Text(feedbackType.rawValue)
                             .font(.headline)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         Spacer()
                     }
@@ -1016,7 +1016,7 @@ struct HelpSupportView: View {
                             VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
                                 Text("お問い合わせ")
                                     .font(.headline)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(.primary)
                                 
                                 Text("直接サポートにお問い合わせ")
                                     .font(.caption)
@@ -1040,7 +1040,7 @@ struct HelpSupportView: View {
                             VStack(alignment: .leading, spacing: Constants.Spacing.medium) {
                                 Text(faq.answer)
                                     .font(.body)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(.primary)
                                     .fixedSize(horizontal: false, vertical: true)
                                 
                                 if let steps = faq.steps {
@@ -1048,7 +1048,7 @@ struct HelpSupportView: View {
                                         Text("手順:")
                                             .font(.subheadline)
                                             .fontWeight(.semibold)
-                                            .foregroundColor(.black)
+                                            .foregroundColor(.primary)
                                         
                                         ForEach(Array(steps.enumerated()), id: \.offset) { index, step in
                                             HStack(alignment: .top, spacing: Constants.Spacing.small) {
@@ -1059,7 +1059,7 @@ struct HelpSupportView: View {
                                                 
                                                 Text(step)
                                                     .font(.caption)
-                                                    .foregroundColor(.black)
+                                                    .foregroundColor(.primary)
                                                     .fixedSize(horizontal: false, vertical: true)
                                             }
                                         }
@@ -1085,7 +1085,7 @@ struct HelpSupportView: View {
                                 
                                 Text(faq.question)
                                     .font(.subheadline)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(.primary)
                                     .multilineTextAlignment(.leading)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
@@ -1108,7 +1108,7 @@ struct HelpSupportView: View {
                                 VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
                                     Text(guide.title)
                                         .font(.headline)
-                                        .foregroundColor(.black)
+                                        .foregroundColor(.primary)
                                     
                                     Text(guide.subtitle)
                                         .font(.caption)
@@ -1125,7 +1125,7 @@ struct HelpSupportView: View {
                 Section("アプリ情報") {
                     HStack {
                         Text("バージョン")
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         Spacer()
                         Text(appVersion)
                             .foregroundColor(Constants.Colors.secondaryFallback)
@@ -1133,7 +1133,7 @@ struct HelpSupportView: View {
                     
                     HStack {
                         Text("ビルドバージョン")
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         Spacer()
                         Text(buildNumber)
                             .foregroundColor(Constants.Colors.secondaryFallback)
@@ -1219,7 +1219,7 @@ struct UsageGuideDetailView: View {
                         Text(guide.title)
                             .font(.title2)
                             .fontWeight(.bold)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                             .frame(maxWidth: .infinity)
                         
                         Text(guide.subtitle)
@@ -1236,11 +1236,11 @@ struct UsageGuideDetailView: View {
                     VStack(alignment: .leading, spacing: Constants.Spacing.small) {
                         Text("概要")
                             .font(.headline)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         Text(guide.content)
                             .font(.body)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
@@ -1250,7 +1250,7 @@ struct UsageGuideDetailView: View {
                     VStack(alignment: .leading, spacing: Constants.Spacing.medium) {
                         Text("手順")
                             .font(.headline)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         ForEach(Array(guide.steps.enumerated()), id: \.offset) { index, step in
                             HStack(alignment: .top, spacing: Constants.Spacing.medium) {
@@ -1273,7 +1273,7 @@ struct UsageGuideDetailView: View {
                                         
                                         Text(step.title)
                                             .font(.headline)
-                                            .foregroundColor(.black)
+                                            .foregroundColor(.primary)
                                     }
                                     
                                     Text(step.description)
@@ -1534,7 +1534,7 @@ struct PrivacyPolicyView: View {
                         Text("プライバシーポリシー")
                             .font(.title2)
                             .fontWeight(.bold)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         Text("最終更新日：2025年1月11日")
                             .font(.subheadline)
@@ -1607,7 +1607,7 @@ struct TermsOfServiceView: View {
                         Text("利用規約")
                             .font(.title2)
                             .fontWeight(.bold)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         Text("最終更新日：2025年1月11日")
                             .font(.subheadline)
@@ -1685,11 +1685,11 @@ struct PolicySection: View {
             Text(title)
                 .font(.headline)
                 .fontWeight(.semibold)
-                .foregroundColor(.black)
+                .foregroundColor(.primary)
             
             Text(content)
                 .font(.body)
-                .foregroundColor(.black)
+                .foregroundColor(.primary)
                 .fixedSize(horizontal: false, vertical: true)
                 .lineSpacing(2)
         }

@@ -14,20 +14,26 @@ class BackupService: ObservableObject {
         let bikeRequest: NSFetchRequest<Bike> = Bike.fetchRequest()
         let maintenanceRequest: NSFetchRequest<MaintenanceRecord> = MaintenanceRecord.fetchRequest()
         let partsRequest: NSFetchRequest<PartsMemo> = PartsMemo.fetchRequest()
+        let photoRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+        let raceResultRequest: NSFetchRequest<RaceResult> = RaceResult.fetchRequest()
+        let racePhotoRequest: NSFetchRequest<RacePhoto> = RacePhoto.fetchRequest()
         
         do {
             let bikes = try context.fetch(bikeRequest)
             let maintenanceRecords = try context.fetch(maintenanceRequest)
             let partsMemos = try context.fetch(partsRequest)
+            let photos = try context.fetch(photoRequest)
+            let raceResults = try context.fetch(raceResultRequest)
+            let racePhotos = try context.fetch(racePhotoRequest)
             
-            return createBackupArchive(bikes: bikes, maintenanceRecords: maintenanceRecords, partsMemos: partsMemos)
+            return createBackupArchive(bikes: bikes, maintenanceRecords: maintenanceRecords, partsMemos: partsMemos, photos: photos, raceResults: raceResults, racePhotos: racePhotos)
         } catch {
             print("Failed to fetch data for export: \(error)")
             return nil
         }
     }
     
-    private func createBackupArchive(bikes: [Bike], maintenanceRecords: [MaintenanceRecord], partsMemos: [PartsMemo]) -> URL? {
+    private func createBackupArchive(bikes: [Bike], maintenanceRecords: [MaintenanceRecord], partsMemos: [PartsMemo], photos: [Photo], raceResults: [RaceResult], racePhotos: [RacePhoto]) -> URL? {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let backupDirectory = documentsDirectory.appendingPathComponent("BikeBackup_\(dateString())")
         
@@ -49,8 +55,29 @@ class BackupService: ObservableObject {
             let partsURL = backupDirectory.appendingPathComponent("parts_memos.csv")
             try partsCSV.write(to: partsURL, atomically: true, encoding: .utf8)
             
+            // Export photos
+            let photosCSV = generatePhotosCSV(photos: photos)
+            let photosURL = backupDirectory.appendingPathComponent("photos.csv")
+            try photosCSV.write(to: photosURL, atomically: true, encoding: .utf8)
+            
+            // Export race results
+            let raceResultsCSV = generateRaceResultsCSV(results: raceResults)
+            let raceResultsURL = backupDirectory.appendingPathComponent("race_results.csv")
+            try raceResultsCSV.write(to: raceResultsURL, atomically: true, encoding: .utf8)
+            
+            // Export race photos
+            let racePhotosCSV = generateRacePhotosCSV(photos: racePhotos)
+            let racePhotosURL = backupDirectory.appendingPathComponent("race_photos.csv")
+            try racePhotosCSV.write(to: racePhotosURL, atomically: true, encoding: .utf8)
+            
             // Export bike images
             exportBikeImages(bikes: bikes, to: backupDirectory)
+            
+            // Export maintenance record photos
+            exportMaintenancePhotos(photos: photos, to: backupDirectory)
+            
+            // Export race photos images
+            exportRacePhotoImages(photos: racePhotos, to: backupDirectory)
             
             return backupDirectory
         } catch {
@@ -121,6 +148,62 @@ class BackupService: ObservableObject {
         return csv
     }
     
+    private func generatePhotosCSV(photos: [Photo]) -> String {
+        var csv = "ID,MaintenanceRecordID,SortOrder,CreatedAt\n"
+        
+        for photo in photos {
+            let id = photo.id?.uuidString ?? ""
+            let maintenanceRecordId = photo.maintenanceRecord?.id?.uuidString ?? ""
+            let sortOrder = String(photo.sortOrder)
+            let createdAt = photo.createdAt?.iso8601String() ?? ""
+            
+            csv += "\(id),\(maintenanceRecordId),\(sortOrder),\(createdAt)\n"
+        }
+        
+        return csv
+    }
+    
+    private func generateRaceResultsCSV(results: [RaceResult]) -> String {
+        var csv = "ID,RaceName,RaceDate,Track,Category,Position,TotalParticipants,BestLapTime,TotalTime,Weather,Temperature,Notes,BikeName,CreatedAt,UpdatedAt\n"
+        
+        for result in results {
+            let id = result.id?.uuidString ?? ""
+            let raceName = (result.raceName ?? "").escapedForCSV()
+            let raceDate = result.raceDate?.iso8601String() ?? ""
+            let track = (result.track ?? "").escapedForCSV()
+            let category = (result.category ?? "").escapedForCSV()
+            let position = String(result.position)
+            let totalParticipants = String(result.totalParticipants)
+            let bestLapTime = (result.bestLapTime ?? "").escapedForCSV()
+            let totalTime = (result.totalTime ?? "").escapedForCSV()
+            let weather = (result.weather ?? "").escapedForCSV()
+            let temperature = (result.temperature ?? "").escapedForCSV()
+            let notes = (result.notes ?? "").escapedForCSV()
+            let bikeName = (result.bikeName ?? "").escapedForCSV()
+            let createdAt = result.createdAt?.iso8601String() ?? ""
+            let updatedAt = result.updatedAt?.iso8601String() ?? ""
+            
+            csv += "\(id),\(raceName),\(raceDate),\(track),\(category),\(position),\(totalParticipants),\(bestLapTime),\(totalTime),\(weather),\(temperature),\(notes),\(bikeName),\(createdAt),\(updatedAt)\n"
+        }
+        
+        return csv
+    }
+    
+    private func generateRacePhotosCSV(photos: [RacePhoto]) -> String {
+        var csv = "ID,RaceResultID,SortOrder,CreatedAt\n"
+        
+        for photo in photos {
+            let id = photo.id?.uuidString ?? ""
+            let raceResultId = photo.raceResult?.id?.uuidString ?? ""
+            let sortOrder = String(photo.sortOrder)
+            let createdAt = photo.createdAt?.iso8601String() ?? ""
+            
+            csv += "\(id),\(raceResultId),\(sortOrder),\(createdAt)\n"
+        }
+        
+        return csv
+    }
+    
     private func exportBikeImages(bikes: [Bike], to directory: URL) {
         let imagesDirectory = directory.appendingPathComponent("images")
         try? FileManager.default.createDirectory(at: imagesDirectory, withIntermediateDirectories: true)
@@ -130,6 +213,32 @@ class BackupService: ObservableObject {
                   let bikeId = bike.id?.uuidString else { continue }
             
             let imageURL = imagesDirectory.appendingPathComponent("\(bikeId).jpg")
+            try? imageData.write(to: imageURL)
+        }
+    }
+    
+    private func exportMaintenancePhotos(photos: [Photo], to directory: URL) {
+        let photosDirectory = directory.appendingPathComponent("maintenance_photos")
+        try? FileManager.default.createDirectory(at: photosDirectory, withIntermediateDirectories: true)
+        
+        for photo in photos {
+            guard let imageData = photo.imageData,
+                  let photoId = photo.id?.uuidString else { continue }
+            
+            let imageURL = photosDirectory.appendingPathComponent("\(photoId).jpg")
+            try? imageData.write(to: imageURL)
+        }
+    }
+    
+    private func exportRacePhotoImages(photos: [RacePhoto], to directory: URL) {
+        let racePhotosDirectory = directory.appendingPathComponent("race_photos")
+        try? FileManager.default.createDirectory(at: racePhotosDirectory, withIntermediateDirectories: true)
+        
+        for photo in photos {
+            guard let imageData = photo.imageData,
+                  let photoId = photo.id?.uuidString else { continue }
+            
+            let imageURL = racePhotosDirectory.appendingPathComponent("\(photoId).jpg")
             try? imageData.write(to: imageURL)
         }
     }
@@ -161,10 +270,40 @@ class BackupService: ObservableObject {
                 try importPartsMemos(from: partsURL, context: context)
             }
             
+            // Import photos
+            let photosURL = directory.appendingPathComponent("photos.csv")
+            if FileManager.default.fileExists(atPath: photosURL.path) {
+                try importPhotos(from: photosURL, context: context)
+            }
+            
+            // Import race results
+            let raceResultsURL = directory.appendingPathComponent("race_results.csv")
+            if FileManager.default.fileExists(atPath: raceResultsURL.path) {
+                try importRaceResults(from: raceResultsURL, context: context)
+            }
+            
+            // Import race photos
+            let racePhotosURL = directory.appendingPathComponent("race_photos.csv")
+            if FileManager.default.fileExists(atPath: racePhotosURL.path) {
+                try importRacePhotos(from: racePhotosURL, context: context)
+            }
+            
             // Import bike images
             let imagesDirectory = directory.appendingPathComponent("images")
             if FileManager.default.fileExists(atPath: imagesDirectory.path) {
                 importBikeImages(from: imagesDirectory, context: context)
+            }
+            
+            // Import maintenance photos
+            let maintenancePhotosDirectory = directory.appendingPathComponent("maintenance_photos")
+            if FileManager.default.fileExists(atPath: maintenancePhotosDirectory.path) {
+                importMaintenancePhotos(from: maintenancePhotosDirectory, context: context)
+            }
+            
+            // Import race photo images
+            let racePhotosDirectory = directory.appendingPathComponent("race_photos")
+            if FileManager.default.fileExists(atPath: racePhotosDirectory.path) {
+                importRacePhotoImages(from: racePhotosDirectory, context: context)
             }
             
             // Save context
@@ -275,6 +414,114 @@ class BackupService: ObservableObject {
         }
     }
     
+    private func importPhotos(from url: URL, context: NSManagedObjectContext) throws {
+        let csvContent = try String(contentsOf: url, encoding: .utf8)
+        let lines = csvContent.components(separatedBy: .newlines).dropFirst()
+        
+        for line in lines {
+            guard !line.isEmpty else { continue }
+            let components = line.parseCSVLine()
+            guard components.count >= 4 else { continue }
+            
+            let photo = Photo(context: context)
+            photo.id = UUID(uuidString: components[0])
+            photo.sortOrder = Int16(components[2]) ?? 0
+            photo.createdAt = Date.fromISO8601String(components[3])
+            
+            // Link to maintenance record
+            if !components[1].isEmpty,
+               let maintenanceRecordId = UUID(uuidString: components[1]) {
+                let maintenanceRequest: NSFetchRequest<MaintenanceRecord> = MaintenanceRecord.fetchRequest()
+                maintenanceRequest.predicate = NSPredicate(format: "id == %@", maintenanceRecordId as CVarArg)
+                if let maintenanceRecord = try? context.fetch(maintenanceRequest).first {
+                    photo.maintenanceRecord = maintenanceRecord
+                }
+            }
+        }
+    }
+    
+    private func importRaceResults(from url: URL, context: NSManagedObjectContext) throws {
+        let csvContent = try String(contentsOf: url, encoding: .utf8)
+        let lines = csvContent.components(separatedBy: .newlines).dropFirst()
+        
+        for line in lines {
+            guard !line.isEmpty else { continue }
+            let components = line.parseCSVLine()
+            guard components.count >= 15 else { continue }
+            
+            let result = RaceResult(context: context)
+            result.id = UUID(uuidString: components[0])
+            result.raceName = components[1]
+            result.raceDate = Date.fromISO8601String(components[2])
+            result.track = components[3]
+            result.category = components[4]
+            result.position = Int32(components[5]) ?? 0
+            result.totalParticipants = Int32(components[6]) ?? 0
+            result.bestLapTime = components[7]
+            result.totalTime = components[8]
+            result.weather = components[9]
+            result.temperature = components[10]
+            result.notes = components[11]
+            result.bikeName = components[12]
+            result.createdAt = Date.fromISO8601String(components[13])
+            result.updatedAt = Date.fromISO8601String(components[14])
+        }
+    }
+    
+    private func importRacePhotos(from url: URL, context: NSManagedObjectContext) throws {
+        let csvContent = try String(contentsOf: url, encoding: .utf8)
+        let lines = csvContent.components(separatedBy: .newlines).dropFirst()
+        
+        for line in lines {
+            guard !line.isEmpty else { continue }
+            let components = line.parseCSVLine()
+            guard components.count >= 4 else { continue }
+            
+            let photo = RacePhoto(context: context)
+            photo.id = UUID(uuidString: components[0])
+            photo.sortOrder = Int16(components[2]) ?? 0
+            photo.createdAt = Date.fromISO8601String(components[3])
+            
+            // Link to race result
+            if !components[1].isEmpty,
+               let raceResultId = UUID(uuidString: components[1]) {
+                let raceResultRequest: NSFetchRequest<RaceResult> = RaceResult.fetchRequest()
+                raceResultRequest.predicate = NSPredicate(format: "id == %@", raceResultId as CVarArg)
+                if let raceResult = try? context.fetch(raceResultRequest).first {
+                    photo.raceResult = raceResult
+                }
+            }
+        }
+    }
+    
+    private func importMaintenancePhotos(from directory: URL, context: NSManagedObjectContext) {
+        let photoRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+        guard let photos = try? context.fetch(photoRequest) else { return }
+        
+        for photo in photos {
+            guard let photoId = photo.id?.uuidString else { continue }
+            let imageURL = directory.appendingPathComponent("\(photoId).jpg")
+            
+            if let imageData = try? Data(contentsOf: imageURL) {
+                photo.imageData = imageData
+            }
+        }
+    }
+    
+    private func importRacePhotoImages(from directory: URL, context: NSManagedObjectContext) {
+        let racePhotoRequest: NSFetchRequest<RacePhoto> = RacePhoto.fetchRequest()
+        guard let racePhotos = try? context.fetch(racePhotoRequest) else { return }
+        
+        for photo in racePhotos {
+            guard let photoId = photo.id?.uuidString else { continue }
+            let imageURL = directory.appendingPathComponent("\(photoId).jpg")
+            
+            if let imageData = try? Data(contentsOf: imageURL) {
+                photo.imageData = imageData
+            }
+        }
+    }
+    
     private func clearAllData() {
         let context = persistenceController.container.viewContext
         
@@ -288,10 +535,22 @@ class BackupService: ObservableObject {
         let partsRequest: NSFetchRequest<NSFetchRequestResult> = PartsMemo.fetchRequest()
         let partsDeleteRequest = NSBatchDeleteRequest(fetchRequest: partsRequest)
         
+        let photoRequest: NSFetchRequest<NSFetchRequestResult> = Photo.fetchRequest()
+        let photoDeleteRequest = NSBatchDeleteRequest(fetchRequest: photoRequest)
+        
+        let raceResultRequest: NSFetchRequest<NSFetchRequestResult> = RaceResult.fetchRequest()
+        let raceResultDeleteRequest = NSBatchDeleteRequest(fetchRequest: raceResultRequest)
+        
+        let racePhotoRequest: NSFetchRequest<NSFetchRequestResult> = RacePhoto.fetchRequest()
+        let racePhotoDeleteRequest = NSBatchDeleteRequest(fetchRequest: racePhotoRequest)
+        
         do {
             try context.execute(bikesDeleteRequest)
             try context.execute(maintenanceDeleteRequest)
             try context.execute(partsDeleteRequest)
+            try context.execute(photoDeleteRequest)
+            try context.execute(raceResultDeleteRequest)
+            try context.execute(racePhotoDeleteRequest)
             try context.save()
         } catch {
             print("Failed to clear data: \(error)")

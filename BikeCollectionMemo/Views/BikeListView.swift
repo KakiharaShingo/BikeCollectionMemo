@@ -117,7 +117,7 @@ struct BikeRowView: View {
                 Text(bike.wrappedName)
                     .font(.headline)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Text("\(bike.wrappedManufacturer) \(bike.wrappedModel)")
@@ -197,7 +197,7 @@ struct EmptyBikeView: View {
                 Text("バイクを登録しよう")
                     .font(.title)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Text("愛車の整備記録を残すために\nまずはバイクを登録してください")
                     .font(.headline)

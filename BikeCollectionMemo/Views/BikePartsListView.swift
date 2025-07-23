@@ -288,7 +288,7 @@ struct PartsDetailRowView: View {
                 HStack {
                     Text(part.wrappedPartName)
                         .font(.headline)
-                        .foregroundColor(part.isPurchased ? Constants.Colors.secondaryFallback : .black)
+                        .foregroundColor(part.isPurchased ? Constants.Colors.secondaryFallback : .primary)
                         .strikethrough(part.isPurchased)
                     
                     Spacer()
@@ -303,7 +303,7 @@ struct PartsDetailRowView: View {
                 if !part.wrappedPartNumber.isEmpty {
                     Text("品番: \(part.wrappedPartNumber)")
                         .font(.caption)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                 }
                 
                 HStack {
@@ -325,7 +325,7 @@ struct PartsDetailRowView: View {
                 if !part.wrappedDescription.isEmpty {
                     Text(part.wrappedDescription)
                         .font(.caption)
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                         .lineLimit(3)
                 }
             }
@@ -400,7 +400,7 @@ struct EmptyPartsListView: View {
                 Text("部品メモがありません")
                     .font(.title3)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Text("必要な部品を\nメモしてみましょう")
                     .font(.body)

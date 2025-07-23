@@ -14,7 +14,7 @@ struct ContentView: View {
     @State private var interstitialTrigger = false
     
     var body: some View {
-        AdSupportedView {
+        VStack(spacing: 0) {
             TabView(selection: $selectedTab) {
                 BikeListView()
                     .tabItem {
@@ -68,6 +68,9 @@ struct ContentView: View {
                 }
             }
             .interstitialAd(trigger: interstitialTrigger)
+            
+            // バナー広告をタブメニューの直上に表示
+            BannerAdView()
         }
     }
     

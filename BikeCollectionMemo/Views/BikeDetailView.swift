@@ -107,7 +107,7 @@ struct BikeInfoSection: View {
                 Text(bike.wrappedName)
                     .font(.title)
                     .fontWeight(.bold)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Text("\(bike.wrappedManufacturer) \(bike.wrappedModel)")
                     .font(.title3)
@@ -214,7 +214,7 @@ struct RecentMaintenanceSection: View {
                 Text("最近の整備記録")
                     .font(.title2)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Spacer()
                 
@@ -276,7 +276,7 @@ struct PartsMemosSection: View {
                 Text("部品メモ")
                     .font(.title2)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Spacer()
                 
@@ -362,7 +362,7 @@ struct MaintenanceRecordCompactRow: View {
                 Text(record.wrappedCategory)
                     .font(.subheadline)
                     .fontWeight(.medium)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Text(record.wrappedItem)
                     .font(.caption)
@@ -413,7 +413,7 @@ struct PartsCompactRow: View {
                     Text(part.wrappedPartName)
                         .font(.subheadline)
                         .fontWeight(.medium)
-                        .foregroundColor(part.isPurchased ? Constants.Colors.secondaryFallback : .black)
+                        .foregroundColor(part.isPurchased ? Constants.Colors.secondaryFallback : .primary)
                         .strikethrough(part.isPurchased)
                     
                     if part.isPurchased {
@@ -428,7 +428,7 @@ struct PartsCompactRow: View {
                 if !part.wrappedPartNumber.isEmpty {
                     Text("品番: \(part.wrappedPartNumber)")
                         .font(.caption)
-                        .foregroundColor(part.isPurchased ? Constants.Colors.secondaryFallback : .black)
+                        .foregroundColor(part.isPurchased ? Constants.Colors.secondaryFallback : .primary)
                         .strikethrough(part.isPurchased)
                 }
             }
@@ -470,7 +470,7 @@ struct EmptyStateView: View {
                 Text(title)
                     .font(.subheadline)
                     .fontWeight(.medium)
-                    .foregroundColor(.black)
+                    .foregroundColor(.primary)
                 
                 Text(subtitle)
                     .font(.caption)

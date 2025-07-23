@@ -70,7 +70,7 @@ struct EditPartsView: View {
                             Text(partsMemo.bike?.wrappedName ?? "")
                                 .font(.subheadline)
                                 .fontWeight(.medium)
-                                .foregroundColor(.black)
+                                .foregroundColor(.primary)
                             
                             Text("\(partsMemo.bike?.wrappedManufacturer ?? "") \(partsMemo.bike?.wrappedModel ?? "")")
                                 .font(.caption)

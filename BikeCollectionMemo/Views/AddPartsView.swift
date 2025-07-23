@@ -67,7 +67,7 @@ struct AddPartsView: View {
                             Text(bike.wrappedName)
                                 .font(.subheadline)
                                 .fontWeight(.medium)
-                                .foregroundColor(.black)
+                                .foregroundColor(.primary)
                             
                             Text("\(bike.wrappedManufacturer) \(bike.wrappedModel)")
                                 .font(.caption)
