@@ -737,6 +737,7 @@ struct FeedbackSheet: View {
     @State private var sendSuccess = false
     @State private var showingMailCompose = false
     @State private var canSendDirectMail = MFMailComposeViewController.canSendMail()
+    @State private var mailResult: MFMailComposeResult?
     
     enum FeedbackType: String, CaseIterable {
         case featureRequest = "機能要望"
@@ -858,11 +859,17 @@ struct FeedbackSheet: View {
                         .buttonStyle(PlainButtonStyle())
                     }
                 } footer: {
-                    Text(canSendDirectMail ? 
-                         "お問い合わせは sk.shingo.10@gmail.com に直接送信されます。通常7営業日以内にご返信いたします。" :
-                         "メールアプリが起動します。sk.shingo.10@gmail.com に送信してください。")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    VStack(alignment: .leading, spacing: 4) {
+                        if canSendDirectMail {
+                            Text("お問い合わせは sk.shingo.10@gmail.com に直接送信されます。通常7営業日以内にご返信いたします。")
+                        } else {
+                            Text("メールアプリでの送信になります。")
+                            Text("⚠️ アプリ内メール送信を利用するには、iPhoneの「設定」→「メール」でメールアカウントを追加してください。")
+                                .foregroundColor(.orange)
+                        }
+                    }
+                    .font(.caption)
+                    .foregroundColor(.secondary)
                 }
             }
             .navigationTitle("お問い合わせ")
@@ -900,7 +907,10 @@ struct FeedbackSheet: View {
                     \(deviceInfo)
                     """,
                     isHTML: false
-                )
+                ) { result, error in
+                    mailResult = result
+                    handleMailResult(result: result, error: error)
+                }
             }
         }
     }
@@ -913,6 +923,26 @@ struct FeedbackSheet: View {
             return "どのような問題が発生しましたか？再現手順も含めて詳しく教えてください。"
         case .general:
             return "ご質問やご意見をお聞かせください。"
+        }
+    }
+    
+    private func handleMailResult(result: MFMailComposeResult, error: Error?) {
+        switch result {
+        case .sent:
+            sendSuccess = true
+            showingSendAlert = true
+        case .cancelled:
+            // キャンセル時は何もしない
+            break
+        case .saved:
+            sendSuccess = true
+            showingSendAlert = true
+        case .failed:
+            sendSuccess = false
+            showingSendAlert = true
+        @unknown default:
+            sendSuccess = false
+            showingSendAlert = true
         }
     }
     
