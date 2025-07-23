@@ -1,5 +1,6 @@
 import SwiftUI
 import SafariServices
+import MessageUI
 
 struct SettingsView: View {
     @StateObject private var backupService = BackupService()
@@ -734,6 +735,8 @@ struct FeedbackSheet: View {
     @State private var deviceInfo = ""
     @State private var showingSendAlert = false
     @State private var sendSuccess = false
+    @State private var showingMailCompose = false
+    @State private var canSendDirectMail = MFMailComposeViewController.canSendMail()
     
     enum FeedbackType: String, CaseIterable {
         case featureRequest = "機能要望"
@@ -809,28 +812,55 @@ struct FeedbackSheet: View {
                 }
                 
                 Section {
-                    Button(action: sendFeedback) {
-                        HStack {
-                            Image(systemName: "paperplane")
-                            Text("送信")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(
-                            LinearGradient(
-                                gradient: Gradient(colors: [Constants.Colors.primaryFallback, Constants.Colors.accentFallback]),
-                                startPoint: .leading,
-                                endPoint: .trailing
+                    if canSendDirectMail {
+                        // アプリ内メール送信
+                        Button(action: { showingMailCompose = true }) {
+                            HStack {
+                                Image(systemName: "paperplane")
+                                Text("送信")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Constants.Colors.primaryFallback, Constants.Colors.accentFallback]),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
                             )
-                        )
-                        .cornerRadius(Constants.CornerRadius.large)
-                        .shadow(color: Constants.Colors.primaryFallback.opacity(0.3), radius: 4, x: 0, y: 2)
+                            .cornerRadius(Constants.CornerRadius.large)
+                            .shadow(color: Constants.Colors.primaryFallback.opacity(0.3), radius: 4, x: 0, y: 2)
+                        }
+                        .disabled(subject.isEmpty || message.isEmpty)
+                        .buttonStyle(PlainButtonStyle())
+                    } else {
+                        // 従来のmailto方式
+                        Button(action: sendFeedback) {
+                            HStack {
+                                Image(systemName: "envelope")
+                                Text("メールアプリで送信")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Constants.Colors.primaryFallback, Constants.Colors.accentFallback]),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .cornerRadius(Constants.CornerRadius.large)
+                            .shadow(color: Constants.Colors.primaryFallback.opacity(0.3), radius: 4, x: 0, y: 2)
+                        }
+                        .disabled(subject.isEmpty || message.isEmpty)
+                        .buttonStyle(PlainButtonStyle())
                     }
-                    .disabled(subject.isEmpty || message.isEmpty)
-                    .buttonStyle(PlainButtonStyle())
                 } footer: {
-                    Text("お問い合わせは sk.shingo.10@gmail.com に送信されます。通常7営業日以内にご返信いたします。")
+                    Text(canSendDirectMail ? 
+                         "お問い合わせは sk.shingo.10@gmail.com に直接送信されます。通常7営業日以内にご返信いたします。" :
+                         "メールアプリが起動します。sk.shingo.10@gmail.com に送信してください。")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -857,6 +887,20 @@ struct FeedbackSheet: View {
                 } else {
                     Text("送信に失敗しました。メールアプリが設定されているかご確認ください。")
                 }
+            }
+            .sheet(isPresented: $showingMailCompose) {
+                MailComposeView(
+                    recipients: ["sk.shingo.10@gmail.com"],
+                    subject: "[\(feedbackType.rawValue)] \(subject)",
+                    messageBody: """
+                    \(message)
+                    
+                    ---
+                    デバイス情報:
+                    \(deviceInfo)
+                    """,
+                    isHTML: false
+                )
             }
         }
     }
