@@ -65,14 +65,50 @@ struct PartsListView: View {
         filteredParts.filter { !$0.isPurchased }.reduce(0) { $0 + $1.estimatedCost }
     }
     
+    var allFilteredParts: [PartsMemo] {
+        // 購入状態に関係なく、全ての部品を取得（検索とバイクフィルターのみ適用）
+        var filtered = Array(partsMemos)
+        
+        // サブスクリプション状態に基づくバイクフィルター（非プレミアムユーザー）
+        if !subscriptionManager.isSubscribed {
+            let allowedBikes = subscriptionManager.getFilteredBikes(from: bikes) as! [Bike]
+            if let allowedBike = allowedBikes.first {
+                filtered = filtered.filter { $0.bike == allowedBike }
+            }
+        }
+        
+        // 手動バイクフィルター（プレミアムユーザーが選択した場合）
+        if let selectedBike = selectedBike {
+            filtered = filtered.filter { $0.bike == selectedBike }
+        }
+        
+        // 検索フィルター
+        if !searchText.isEmpty {
+            filtered = filtered.filter { memo in
+                memo.wrappedPartName.localizedCaseInsensitiveContains(searchText) ||
+                memo.wrappedPartNumber.localizedCaseInsensitiveContains(searchText) ||
+                memo.wrappedDescription.localizedCaseInsensitiveContains(searchText) ||
+                memo.bike?.wrappedName.localizedCaseInsensitiveContains(searchText) ?? false
+            }
+        }
+        
+        return filtered
+    }
+    
+    var totalPurchasedCost: Double {
+        return allFilteredParts.filter { $0.isPurchased }.reduce(0) { $0 + $1.estimatedCost }
+    }
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                if !filteredParts.isEmpty {
+                if !filteredParts.isEmpty || totalPurchasedCost > 0 {
                     // 統計情報
                     StatsSectionView(
+                        totalCount: allFilteredParts.count,
+                        unpurchasedCount: filteredParts.filter { !$0.isPurchased }.count,
                         totalCost: totalEstimatedCost,
-                        itemCount: filteredParts.filter { !$0.isPurchased }.count
+                        purchasedCost: totalPurchasedCost
                     )
                 }
                 
@@ -205,33 +241,65 @@ struct PartsListView: View {
 }
 
 struct StatsSectionView: View {
+    let totalCount: Int
+    let unpurchasedCount: Int
     let totalCost: Double
-    let itemCount: Int
+    let purchasedCost: Double
     
     var body: some View {
-        HStack(alignment: .center) {
-            VStack(alignment: .leading, spacing: Constants.Spacing.small) {
-                Text("予算総額")
-                    .font(.subheadline)
-                    .foregroundColor(Constants.Colors.secondaryFallback)
+        VStack(spacing: Constants.Spacing.small) {
+            // 上段：件数の統計
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
+                    Text("総件数")
+                        .font(.caption)
+                        .foregroundColor(Constants.Colors.secondaryFallback)
+                    
+                    Text("\(totalCount)件")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+                }
                 
-                Text("¥\(Int(totalCost))")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(.blue)
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: Constants.Spacing.extraSmall) {
+                    Text("未購入")
+                        .font(.caption)
+                        .foregroundColor(Constants.Colors.secondaryFallback)
+                    
+                    Text("\(unpurchasedCount)件")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.orange)
+                }
             }
             
-            Spacer()
-            
-            VStack(alignment: .trailing, spacing: Constants.Spacing.small) {
-                Text("未購入")
-                    .font(.subheadline)
-                    .foregroundColor(Constants.Colors.secondaryFallback)
+            // 下段：金額の統計
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
+                    Text("予算総額")
+                        .font(.caption)
+                        .foregroundColor(Constants.Colors.secondaryFallback)
+                    
+                    Text("¥\(Int(totalCost))")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+                }
                 
-                Text("\(itemCount)件")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(.blue)
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: Constants.Spacing.extraSmall) {
+                    Text("完了金額")
+                        .font(.caption)
+                        .foregroundColor(Constants.Colors.secondaryFallback)
+                    
+                    Text("¥\(Int(purchasedCost))")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.green)
+                }
             }
         }
         .padding(Constants.Spacing.medium)
