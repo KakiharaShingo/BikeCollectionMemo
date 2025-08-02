@@ -49,6 +49,10 @@ struct BikePartsListView: View {
         filteredParts.filter { !$0.isPurchased }.reduce(0) { $0 + $1.estimatedCost }
     }
     
+    private var totalPurchasedCost: Double {
+        filteredParts.filter { $0.isPurchased }.reduce(0) { $0 + $1.estimatedCost }
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             // 統計情報
@@ -56,7 +60,8 @@ struct BikePartsListView: View {
                 PartsStatsSectionView(
                     totalCount: filteredParts.count,
                     unpurchasedCount: filteredParts.filter { !$0.isPurchased }.count,
-                    totalCost: totalEstimatedCost
+                    totalCost: totalEstimatedCost,
+                    purchasedCost: totalPurchasedCost
                 )
             }
             
@@ -131,42 +136,62 @@ struct PartsStatsSectionView: View {
     let totalCount: Int
     let unpurchasedCount: Int
     let totalCost: Double
+    let purchasedCost: Double
     
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
-                Text("総件数")
-                    .font(.caption)
-                    .foregroundColor(Constants.Colors.secondaryFallback)
+        VStack(spacing: Constants.Spacing.small) {
+            // 上段：件数の統計
+            HStack {
+                VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
+                    Text("総件数")
+                        .font(.caption)
+                        .foregroundColor(Constants.Colors.secondaryFallback)
+                    
+                    Text("\(totalCount)件")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+                }
                 
-                Text("\(totalCount)件")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.blue)
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: Constants.Spacing.extraSmall) {
+                    Text("未購入")
+                        .font(.caption)
+                        .foregroundColor(Constants.Colors.secondaryFallback)
+                    
+                    Text("\(unpurchasedCount)件")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.orange)
+                }
             }
             
-            VStack(alignment: .center, spacing: Constants.Spacing.extraSmall) {
-                Text("未購入")
-                    .font(.caption)
-                    .foregroundColor(Constants.Colors.secondaryFallback)
+            // 下段：金額の統計
+            HStack {
+                VStack(alignment: .leading, spacing: Constants.Spacing.extraSmall) {
+                    Text("予算総額")
+                        .font(.caption)
+                        .foregroundColor(Constants.Colors.secondaryFallback)
+                    
+                    Text("¥\(Int(totalCost))")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+                }
                 
-                Text("\(unpurchasedCount)件")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.blue)
-            }
-            
-            Spacer()
-            
-            VStack(alignment: .trailing, spacing: Constants.Spacing.extraSmall) {
-                Text("予算総額")
-                    .font(.caption)
-                    .foregroundColor(Constants.Colors.secondaryFallback)
+                Spacer()
                 
-                Text("¥\(Int(totalCost))")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.blue)
+                VStack(alignment: .trailing, spacing: Constants.Spacing.extraSmall) {
+                    Text("完了金額")
+                        .font(.caption)
+                        .foregroundColor(Constants.Colors.secondaryFallback)
+                    
+                    Text("¥\(Int(purchasedCost))")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(.green)
+                }
             }
         }
         .padding(Constants.Spacing.medium)
