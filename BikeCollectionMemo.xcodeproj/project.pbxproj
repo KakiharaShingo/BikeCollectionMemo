@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		28D1B9242E39220300EBD87C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 28D1B9232E39220300EBD87C /* GoogleMobileAds */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		28AA08272E0BE4AC00B718BC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,14 +28,27 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		28AA08192E0BE4AB00B718BC /* BikeCollectionMemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = BikeCollectionMemo.app; path = "モトメモ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		28AA08192E0BE4AB00B718BC /* モトメモ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "モトメモ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		28AA08262E0BE4AC00B718BC /* BikeCollectionMemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BikeCollectionMemoTests.xctest; path = "モトメモ.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		28AA08302E0BE4AC00B718BC /* BikeCollectionMemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BikeCollectionMemoUITests.xctest; path = "モトメモ.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		28D1B98A2E39274A00EBD87C /* Exceptions for "BikeCollectionMemo" folder in "BikeCollectionMemo" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 28AA08182E0BE4AB00B718BC /* BikeCollectionMemo */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		28AA081B2E0BE4AB00B718BC /* BikeCollectionMemo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				28D1B98A2E39274A00EBD87C /* Exceptions for "BikeCollectionMemo" folder in "BikeCollectionMemo" target */,
+			);
 			path = BikeCollectionMemo;
 			sourceTree = "<group>";
 		};
@@ -52,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28D1B9242E39220300EBD87C /* GoogleMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +96,7 @@
 				28AA081B2E0BE4AB00B718BC /* BikeCollectionMemo */,
 				28AA08292E0BE4AC00B718BC /* BikeCollectionMemoTests */,
 				28AA08332E0BE4AC00B718BC /* BikeCollectionMemoUITests */,
+				28D1B9222E39220300EBD87C /* Frameworks */,
 				28AA081A2E0BE4AB00B718BC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,11 +104,18 @@
 		28AA081A2E0BE4AB00B718BC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				28AA08192E0BE4AB00B718BC /* BikeCollectionMemo.app */,
+				28AA08192E0BE4AB00B718BC /* モトメモ.app */,
 				28AA08262E0BE4AC00B718BC /* BikeCollectionMemoTests.xctest */,
 				28AA08302E0BE4AC00B718BC /* BikeCollectionMemoUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		28D1B9222E39220300EBD87C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,9 +138,10 @@
 			);
 			name = BikeCollectionMemo;
 			packageProductDependencies = (
+				28D1B9232E39220300EBD87C /* GoogleMobileAds */,
 			);
 			productName = BikeCollectionMemo;
-			productReference = 28AA08192E0BE4AB00B718BC /* BikeCollectionMemo.app */;
+			productReference = 28AA08192E0BE4AB00B718BC /* モトメモ.app */;
 			productType = "com.apple.product-type.application";
 		};
 		28AA08252E0BE4AC00B718BC /* BikeCollectionMemoTests */ = {
@@ -195,6 +222,9 @@
 			);
 			mainGroup = 28AA08102E0BE4AB00B718BC;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				28D1B9212E391F6600EBD87C /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 28AA081A2E0BE4AB00B718BC /* Products */;
 			projectDirPath = "";
@@ -400,6 +430,7 @@
 				DEVELOPMENT_TEAM = V47R62H7V3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BikeCollectionMemo/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -428,6 +459,7 @@
 				DEVELOPMENT_TEAM = V47R62H7V3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BikeCollectionMemo/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -558,6 +590,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		28D1B9212E391F6600EBD87C /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.8.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		28D1B9232E39220300EBD87C /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 28D1B9212E391F6600EBD87C /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 28AA08112E0BE4AB00B718BC /* Project object */;
 }

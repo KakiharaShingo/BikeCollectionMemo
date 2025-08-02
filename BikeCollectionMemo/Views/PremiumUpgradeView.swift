@@ -203,7 +203,7 @@ struct PremiumHeaderView: View {
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
                 
-                Text("すべての機能を制限なしで利用できます")
+                Text("広告なし・無制限でバイクを登録できます")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -215,8 +215,7 @@ struct PremiumHeaderView: View {
 struct FeatureComparisonView: View {
     let features = [
         ("バイク登録数", "1台まで", "無制限"),
-        // 仮リリースでは広告なしのため一時的にコメントアウト
-        // ("広告表示", "あり", "なし"),
+        ("広告表示", "あり", "なし"),
         ("サポート", "標準", "優先"),
         ("新機能", "標準リリース", "アーリーアクセス")
     ]
@@ -679,7 +678,7 @@ struct BikeUpgradePromptView: View {
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
                 
-                Text("無料プランでは1台まで登録できます。\nプレミアムプランにアップグレードして、\n無制限にバイクを登録しましょう！")
+                Text("無料プランでは1台まで登録できます。\nプレミアムプランにアップグレードして、\n広告なしで無制限にバイクを登録しましょう！")
                     .font(.body)
                     .multilineTextAlignment(.center)
                     .foregroundColor(.secondary)
@@ -750,8 +749,7 @@ struct PurchaseConfirmationSheet: View {
     private var planBenefits: [String] {
         let benefits = [
             "無制限のバイク登録",
-            // 仮リリースでは広告なしのため一時的にコメントアウト
-            // "広告なし",
+            "広告なし",
             "優先サポート",
             "新機能のアーリーアクセス"
         ]
