@@ -152,7 +152,8 @@ struct EditMaintenanceRecordView: View {
                         .keyboardType(.numberPad)
                     
                     TextField("メモ", text: $notes, axis: .vertical)
-                        .lineLimit(3...6)
+                        .frame(minHeight: 120)
+                        .lineLimit(nil)
                 }
                 
                 Section("写真") {
