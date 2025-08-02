@@ -265,15 +265,16 @@ struct SettingsRowView: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: action) {
-            SettingsRowContentView(
-                icon: icon,
-                title: title,
-                subtitle: subtitle,
-                iconColor: iconColor
-            )
+        SettingsRowContentView(
+            icon: icon,
+            title: title,
+            subtitle: subtitle,
+            iconColor: iconColor
+        )
+        .contentShape(Rectangle())
+        .onTapGesture {
+            action()
         }
-        .buttonStyle(PlainButtonStyle())
     }
 }
 
@@ -732,12 +733,12 @@ struct FeedbackSheet: View {
     @State private var feedbackType: FeedbackType = .featureRequest
     @State private var subject = ""
     @State private var message = ""
+    @State private var senderEmail = ""
     @State private var deviceInfo = ""
     @State private var showingSendAlert = false
     @State private var sendSuccess = false
-    @State private var showingMailCompose = false
-    @State private var canSendDirectMail = MFMailComposeViewController.canSendMail()
-    @State private var mailResult: MFMailComposeResult?
+    @State private var isSending = false
+    @State private var errorMessage: String?
     
     enum FeedbackType: String, CaseIterable {
         case featureRequest = "機能要望"
@@ -782,6 +783,12 @@ struct FeedbackSheet: View {
                     .clipShape(RoundedRectangle(cornerRadius: Constants.CornerRadius.medium))
                 }
                 
+                Section("送信者情報") {
+                    TextField("メールアドレス", text: $senderEmail)
+                        .keyboardType(.emailAddress)
+                        .autocapitalization(.none)
+                }
+                
                 Section("件名") {
                     TextField("簡潔に内容を説明してください", text: $subject)
                 }
@@ -813,60 +820,38 @@ struct FeedbackSheet: View {
                 }
                 
                 Section {
-                    if canSendDirectMail {
-                        // アプリ内メール送信
-                        Button(action: { showingMailCompose = true }) {
-                            HStack {
+                    // アプリから直接送信
+                    Button(action: { sendFeedbackDirect() }) {
+                        HStack {
+                            if isSending {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                    .scaleEffect(0.8)
+                                Text("送信中...")
+                            } else {
                                 Image(systemName: "paperplane")
                                 Text("送信")
                             }
-                            .frame(maxWidth: .infinity)
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [Constants.Colors.primaryFallback, Constants.Colors.accentFallback]),
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .cornerRadius(Constants.CornerRadius.large)
-                            .shadow(color: Constants.Colors.primaryFallback.opacity(0.3), radius: 4, x: 0, y: 2)
                         }
-                        .disabled(subject.isEmpty || message.isEmpty)
-                        .buttonStyle(PlainButtonStyle())
-                    } else {
-                        // 従来のmailto方式
-                        Button(action: sendFeedback) {
-                            HStack {
-                                Image(systemName: "envelope")
-                                Text("メールアプリで送信")
-                            }
-                            .frame(maxWidth: .infinity)
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [Constants.Colors.primaryFallback, Constants.Colors.accentFallback]),
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(
+                            LinearGradient(
+                                gradient: Gradient(colors: [Constants.Colors.primaryFallback, Constants.Colors.accentFallback]),
+                                startPoint: .leading,
+                                endPoint: .trailing
                             )
-                            .cornerRadius(Constants.CornerRadius.large)
-                            .shadow(color: Constants.Colors.primaryFallback.opacity(0.3), radius: 4, x: 0, y: 2)
-                        }
-                        .disabled(subject.isEmpty || message.isEmpty)
-                        .buttonStyle(PlainButtonStyle())
+                        )
+                        .cornerRadius(Constants.CornerRadius.large)
+                        .shadow(color: Constants.Colors.primaryFallback.opacity(0.3), radius: 4, x: 0, y: 2)
                     }
+                    .disabled(subject.isEmpty || message.isEmpty || senderEmail.isEmpty || isSending)
+                    .buttonStyle(PlainButtonStyle())
                 } footer: {
                     VStack(alignment: .leading, spacing: 4) {
-                        if canSendDirectMail {
-                            Text("お問い合わせは sk.shingo.10@gmail.com に直接送信されます。通常7営業日以内にご返信いたします。")
-                        } else {
-                            Text("メールアプリでの送信になります。")
-                            Text("⚠️ アプリ内メール送信を利用するには、iPhoneの「設定」→「メール」でメールアカウントを追加してください。")
-                                .foregroundColor(.orange)
-                        }
+                        Text("お問い合わせはアプリから直接送信されます。通常7営業日以内にご返信いたします。")
+                        Text("ご入力いただいたメールアドレス宛に返信いたします。")
                     }
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -892,24 +877,7 @@ struct FeedbackSheet: View {
                 if sendSuccess {
                     Text("お問い合わせを送信しました。ご連絡ありがとうございます。")
                 } else {
-                    Text("送信に失敗しました。メールアプリが設定されているかご確認ください。")
-                }
-            }
-            .sheet(isPresented: $showingMailCompose) {
-                MailComposeView(
-                    recipients: ["sk.shingo.10@gmail.com"],
-                    subject: "[\(feedbackType.rawValue)] \(subject)",
-                    messageBody: """
-                    \(message)
-                    
-                    ---
-                    デバイス情報:
-                    \(deviceInfo)
-                    """,
-                    isHTML: false
-                ) { result, error in
-                    mailResult = result
-                    handleMailResult(result: result, error: error)
+                    Text(errorMessage ?? "送信に失敗しました。インターネット接続をご確認ください。")
                 }
             }
         }
@@ -926,24 +894,80 @@ struct FeedbackSheet: View {
         }
     }
     
-    private func handleMailResult(result: MFMailComposeResult, error: Error?) {
-        switch result {
-        case .sent:
-            sendSuccess = true
-            showingSendAlert = true
-        case .cancelled:
-            // キャンセル時は何もしない
-            break
-        case .saved:
-            sendSuccess = true
-            showingSendAlert = true
-        case .failed:
-            sendSuccess = false
-            showingSendAlert = true
-        @unknown default:
-            sendSuccess = false
-            showingSendAlert = true
+    private func sendFeedbackDirect() {
+        isSending = true
+        errorMessage = nil
+        
+        Task {
+            do {
+                let success = try await sendFeedbackToServer()
+                await MainActor.run {
+                    isSending = false
+                    sendSuccess = success
+                    showingSendAlert = true
+                }
+            } catch {
+                await MainActor.run {
+                    isSending = false
+                    sendSuccess = false
+                    errorMessage = error.localizedDescription
+                    showingSendAlert = true
+                }
+            }
         }
+    }
+    
+    private func sendFeedbackToServer() async throws -> Bool {
+        // EmailJS設定 - 実際の値に置き換えてください
+        let serviceID = "YOUR_SERVICE_ID"  // EmailJSのService ID
+        let templateID = "YOUR_TEMPLATE_ID"  // EmailJSのTemplate ID
+        let publicKey = "YOUR_PUBLIC_KEY"  // EmailJSのPublic Key
+        
+        // EmailJSのエンドポイント
+        guard let url = URL(string: "https://api.emailjs.com/api/v1.0/email/send") else {
+            throw URLError(.badURL)
+        }
+        
+        // テンプレートパラメータ
+        let templateParams = [
+            "from_name": senderEmail.components(separatedBy: "@").first ?? "ユーザー",
+            "from_email": senderEmail,
+            "subject": "[\(feedbackType.rawValue)] \(subject)",
+            "message": message,
+            "device_info": deviceInfo,
+            "feedback_type": feedbackType.rawValue
+        ]
+        
+        // EmailJSリクエストボディ
+        let requestBody = [
+            "service_id": serviceID,
+            "template_id": templateID,
+            "user_id": publicKey,
+            "template_params": templateParams
+        ] as [String: Any]
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let jsonData = try JSONSerialization.data(withJSONObject: requestBody)
+        request.httpBody = jsonData
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        if let httpResponse = response as? HTTPURLResponse {
+            if httpResponse.statusCode == 200 {
+                return true
+            } else {
+                // デバッグ用: レスポンスの内容をログ出力
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("EmailJS Error Response: \(responseString)")
+                }
+                return false
+            }
+        }
+        
+        return false
     }
     
     private func setupDeviceInfo() {
@@ -959,35 +983,6 @@ struct FeedbackSheet: View {
         """
     }
     
-    private func sendFeedback() {
-        let emailSubject = "[\(feedbackType.rawValue)] \(subject)"
-        let emailBody = """
-        \(message)
-        
-        ---
-        デバイス情報:
-        \(deviceInfo)
-        """
-        
-        let encodedSubject = emailSubject.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let encodedBody = emailBody.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        
-        let mailtoURL = "mailto:sk.shingo.10@gmail.com?subject=\(encodedSubject)&body=\(encodedBody)"
-        
-        if let url = URL(string: mailtoURL) {
-            if UIApplication.shared.canOpenURL(url) {
-                UIApplication.shared.open(url) { success in
-                    DispatchQueue.main.async {
-                        sendSuccess = success
-                        showingSendAlert = true
-                    }
-                }
-            } else {
-                sendSuccess = false
-                showingSendAlert = true
-            }
-        }
-    }
 }
 
 struct AboutSheet: View {
