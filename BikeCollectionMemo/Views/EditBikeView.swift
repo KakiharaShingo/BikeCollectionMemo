@@ -27,8 +27,7 @@ struct EditBikeView: View {
     
     private var isFormValid: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !manufacturer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !model.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !manufacturer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
     var body: some View {
