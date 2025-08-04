@@ -16,8 +16,14 @@ class AdMobManager: NSObject, ObservableObject, FullScreenContentDelegate {
     let testBannerAdUnitID = "ca-app-pub-3940256099942544/2934735716"
     let testInterstitialAdUnitID = "ca-app-pub-3940256099942544/4411468910"
     
-    // デバッグモード設定
-    let isDebugMode = true
+    // デバッグモード設定（ビルド設定に基づいて自動判定）
+    let isDebugMode: Bool = {
+        #if DEBUG
+        return true
+        #else
+        return false
+        #endif
+    }()
     
     @Published var isAdLoaded = false
     @Published var showAds = true
@@ -91,7 +97,7 @@ class AdMobManager: NSObject, ObservableObject, FullScreenContentDelegate {
             request.keywords = ["test", "debug"]
         }
         let adUnitID = isDebugMode ? testInterstitialAdUnitID : interstitialAdUnitID
-        print("🔍 Loading interstitial ad with ID: \(adUnitID)")
+        print("🔍 Loading interstitial ad with ID: \(adUnitID) (Debug mode: \(isDebugMode))")
         
         InterstitialAd.load(with: adUnitID, request: request, completionHandler: { [weak self] ad, error in
             DispatchQueue.main.async {
@@ -206,7 +212,7 @@ struct AdMobBannerView: UIViewRepresentable {
         bannerView.adUnitID = adUnitID
         bannerView.delegate = context.coordinator
         
-        print("🔍 Banner view created with ad unit ID: \(bannerView.adUnitID ?? "nil")")
+        print("🔍 Banner view created with ad unit ID: \(bannerView.adUnitID ?? "nil") (Debug mode: \(adManager.isDebugMode))")
         
         // Root view controllerの設定を遅延させて確実に取得
         DispatchQueue.main.async {
