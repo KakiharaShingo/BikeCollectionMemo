@@ -1,0 +1,6 @@
+framework module Pods_BikeCollectionMemo_BikeCollectionMemoUITests {
+  umbrella header "Pods-BikeCollectionMemo-BikeCollectionMemoUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

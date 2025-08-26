@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		28D1B9242E39220300EBD87C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 28D1B9232E39220300EBD87C /* GoogleMobileAds */; };
+		0FBB05965D2D399FE716DDA3 /* Pods_BikeCollectionMemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAB0DC79BAE0867B861580DE /* Pods_BikeCollectionMemoTests.framework */; };
+		96CAD4C2BBFCDF78E33D84AF /* Pods_BikeCollectionMemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F02868D19FC0876B940D150A /* Pods_BikeCollectionMemo.framework */; };
+		D4758112BFAB8BA885FCD01C /* Pods_BikeCollectionMemo_BikeCollectionMemoUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E00B73E9E1ACB50EE1F36F9 /* Pods_BikeCollectionMemo_BikeCollectionMemoUITests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +33,15 @@
 		28AA08192E0BE4AB00B718BC /* モトメモ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "モトメモ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		28AA08262E0BE4AC00B718BC /* BikeCollectionMemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BikeCollectionMemoTests.xctest; path = "モトメモ.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		28AA08302E0BE4AC00B718BC /* BikeCollectionMemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BikeCollectionMemoUITests.xctest; path = "モトメモ.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E00B73E9E1ACB50EE1F36F9 /* Pods_BikeCollectionMemo_BikeCollectionMemoUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BikeCollectionMemo_BikeCollectionMemoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		680424565BAC3C06466D078E /* Pods-BikeCollectionMemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BikeCollectionMemo.debug.xcconfig"; path = "Target Support Files/Pods-BikeCollectionMemo/Pods-BikeCollectionMemo.debug.xcconfig"; sourceTree = "<group>"; };
+		8D0E54C5761E377D45DBEEDE /* Pods-BikeCollectionMemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BikeCollectionMemoTests.debug.xcconfig"; path = "Target Support Files/Pods-BikeCollectionMemoTests/Pods-BikeCollectionMemoTests.debug.xcconfig"; sourceTree = "<group>"; };
+		8ED9FC835F2BCA93E176EB37 /* Pods-BikeCollectionMemo-BikeCollectionMemoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BikeCollectionMemo-BikeCollectionMemoUITests.debug.xcconfig"; path = "Target Support Files/Pods-BikeCollectionMemo-BikeCollectionMemoUITests/Pods-BikeCollectionMemo-BikeCollectionMemoUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		9C9C1BFC484FA4CD9CB84B8C /* Pods-BikeCollectionMemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BikeCollectionMemo.release.xcconfig"; path = "Target Support Files/Pods-BikeCollectionMemo/Pods-BikeCollectionMemo.release.xcconfig"; sourceTree = "<group>"; };
+		D9511570F68F10D41F3A08AC /* Pods-BikeCollectionMemo-BikeCollectionMemoUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BikeCollectionMemo-BikeCollectionMemoUITests.release.xcconfig"; path = "Target Support Files/Pods-BikeCollectionMemo-BikeCollectionMemoUITests/Pods-BikeCollectionMemo-BikeCollectionMemoUITests.release.xcconfig"; sourceTree = "<group>"; };
+		E9518BED0AE88D9C91FC529B /* Pods-BikeCollectionMemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BikeCollectionMemoTests.release.xcconfig"; path = "Target Support Files/Pods-BikeCollectionMemoTests/Pods-BikeCollectionMemoTests.release.xcconfig"; sourceTree = "<group>"; };
+		F02868D19FC0876B940D150A /* Pods_BikeCollectionMemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BikeCollectionMemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAB0DC79BAE0867B861580DE /* Pods_BikeCollectionMemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BikeCollectionMemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -54,11 +65,15 @@
 		};
 		28AA08292E0BE4AC00B718BC /* BikeCollectionMemoTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = BikeCollectionMemoTests;
 			sourceTree = "<group>";
 		};
 		28AA08332E0BE4AC00B718BC /* BikeCollectionMemoUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = BikeCollectionMemoUITests;
 			sourceTree = "<group>";
 		};
@@ -69,7 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28D1B9242E39220300EBD87C /* GoogleMobileAds in Frameworks */,
+				96CAD4C2BBFCDF78E33D84AF /* Pods_BikeCollectionMemo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0FBB05965D2D399FE716DDA3 /* Pods_BikeCollectionMemoTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4758112BFAB8BA885FCD01C /* Pods_BikeCollectionMemo_BikeCollectionMemoUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +115,7 @@
 				28AA08332E0BE4AC00B718BC /* BikeCollectionMemoUITests */,
 				28D1B9222E39220300EBD87C /* Frameworks */,
 				28AA081A2E0BE4AB00B718BC /* Products */,
+				F11CD998EB856CD2A53F6BAA /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -114,8 +132,25 @@
 		28D1B9222E39220300EBD87C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F02868D19FC0876B940D150A /* Pods_BikeCollectionMemo.framework */,
+				4E00B73E9E1ACB50EE1F36F9 /* Pods_BikeCollectionMemo_BikeCollectionMemoUITests.framework */,
+				FAB0DC79BAE0867B861580DE /* Pods_BikeCollectionMemoTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F11CD998EB856CD2A53F6BAA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				680424565BAC3C06466D078E /* Pods-BikeCollectionMemo.debug.xcconfig */,
+				9C9C1BFC484FA4CD9CB84B8C /* Pods-BikeCollectionMemo.release.xcconfig */,
+				8ED9FC835F2BCA93E176EB37 /* Pods-BikeCollectionMemo-BikeCollectionMemoUITests.debug.xcconfig */,
+				D9511570F68F10D41F3A08AC /* Pods-BikeCollectionMemo-BikeCollectionMemoUITests.release.xcconfig */,
+				8D0E54C5761E377D45DBEEDE /* Pods-BikeCollectionMemoTests.debug.xcconfig */,
+				E9518BED0AE88D9C91FC529B /* Pods-BikeCollectionMemoTests.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,10 +160,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 28AA083A2E0BE4AC00B718BC /* Build configuration list for PBXNativeTarget "BikeCollectionMemo" */;
 			buildPhases = (
+				C0C13FCDC3BED7B212B1F5BE /* [CP] Check Pods Manifest.lock */,
 				28AA08152E0BE4AB00B718BC /* Sources */,
 				28AA08162E0BE4AB00B718BC /* Frameworks */,
 				28AA08172E0BE4AB00B718BC /* Resources */,
-				28D1B9FF2E39330000EBD87C /* Copy SPM dSYMs */,
+				E433EB2035874A7B5A033673 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -138,9 +174,6 @@
 				28AA081B2E0BE4AB00B718BC /* BikeCollectionMemo */,
 			);
 			name = BikeCollectionMemo;
-			packageProductDependencies = (
-				28D1B9232E39220300EBD87C /* GoogleMobileAds */,
-			);
 			productName = BikeCollectionMemo;
 			productReference = 28AA08192E0BE4AB00B718BC /* モトメモ.app */;
 			productType = "com.apple.product-type.application";
@@ -149,6 +182,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 28AA083D2E0BE4AC00B718BC /* Build configuration list for PBXNativeTarget "BikeCollectionMemoTests" */;
 			buildPhases = (
+				6C98FB02E424DDF459803017 /* [CP] Check Pods Manifest.lock */,
 				28AA08222E0BE4AC00B718BC /* Sources */,
 				28AA08232E0BE4AC00B718BC /* Frameworks */,
 				28AA08242E0BE4AC00B718BC /* Resources */,
@@ -162,8 +196,6 @@
 				28AA08292E0BE4AC00B718BC /* BikeCollectionMemoTests */,
 			);
 			name = BikeCollectionMemoTests;
-			packageProductDependencies = (
-			);
 			productName = BikeCollectionMemoTests;
 			productReference = 28AA08262E0BE4AC00B718BC /* BikeCollectionMemoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -172,9 +204,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 28AA08402E0BE4AC00B718BC /* Build configuration list for PBXNativeTarget "BikeCollectionMemoUITests" */;
 			buildPhases = (
+				9033E467572D49D35A231AD0 /* [CP] Check Pods Manifest.lock */,
 				28AA082C2E0BE4AC00B718BC /* Sources */,
 				28AA082D2E0BE4AC00B718BC /* Frameworks */,
 				28AA082E2E0BE4AC00B718BC /* Resources */,
+				A22B4D5D99AA2A829457E7B6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -185,8 +219,6 @@
 				28AA08332E0BE4AC00B718BC /* BikeCollectionMemoUITests */,
 			);
 			name = BikeCollectionMemoUITests;
-			packageProductDependencies = (
-			);
 			productName = BikeCollectionMemoUITests;
 			productReference = 28AA08302E0BE4AC00B718BC /* BikeCollectionMemoUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -223,9 +255,6 @@
 			);
 			mainGroup = 28AA08102E0BE4AB00B718BC;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-				28D1B9212E391F6600EBD87C /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
-			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 28AA081A2E0BE4AB00B718BC /* Products */;
 			projectDirPath = "";
@@ -263,24 +292,105 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		28D1B9FF2E39330000EBD87C /* Copy SPM dSYMs */ = {
+		6C98FB02E424DDF459803017 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "Copy SPM dSYMs";
+			name = "[CP] Check Pods Manifest.lock";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BikeCollectionMemoTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Copy dSYMs for SPM frameworks to ensure they're included in the archive\nif [ \"$CONFIGURATION\" = \"Release\" ]; then\n    echo \"Looking for SPM dSYMs...\"\n    \n    # Create dSYM directory if it doesn't exist\n    mkdir -p \"$DWARF_DSYM_FOLDER_PATH\"\n    \n    # Search in the built products directory first\n    if [ -d \"$BUILT_PRODUCTS_DIR/GoogleMobileAds.framework.dSYM\" ]; then\n        echo \"Found GoogleMobileAds dSYM in BUILT_PRODUCTS_DIR\"\n        cp -R \"$BUILT_PRODUCTS_DIR/GoogleMobileAds.framework.dSYM\" \"$DWARF_DSYM_FOLDER_PATH/\"\n    fi\n    \n    if [ -d \"$BUILT_PRODUCTS_DIR/UserMessagingPlatform.framework.dSYM\" ]; then\n        echo \"Found UserMessagingPlatform dSYM in BUILT_PRODUCTS_DIR\"\n        cp -R \"$BUILT_PRODUCTS_DIR/UserMessagingPlatform.framework.dSYM\" \"$DWARF_DSYM_FOLDER_PATH/\"\n    fi\n    \n    # Search in target build directory\n    TARGET_BUILD_DIR_PARENT=\"$(dirname \"$TARGET_BUILD_DIR\")\"\n    if [ -d \"$TARGET_BUILD_DIR_PARENT/GoogleMobileAds.framework.dSYM\" ]; then\n        echo \"Found GoogleMobileAds dSYM in TARGET_BUILD_DIR_PARENT\"\n        cp -R \"$TARGET_BUILD_DIR_PARENT/GoogleMobileAds.framework.dSYM\" \"$DWARF_DSYM_FOLDER_PATH/\"\n    fi\n    \n    if [ -d \"$TARGET_BUILD_DIR_PARENT/UserMessagingPlatform.framework.dSYM\" ]; then\n        echo \"Found UserMessagingPlatform dSYM in TARGET_BUILD_DIR_PARENT\"\n        cp -R \"$TARGET_BUILD_DIR_PARENT/UserMessagingPlatform.framework.dSYM\" \"$DWARF_DSYM_FOLDER_PATH/\"\n    fi\n    \n    echo \"dSYM copy script completed\"\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9033E467572D49D35A231AD0 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BikeCollectionMemo-BikeCollectionMemoUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A22B4D5D99AA2A829457E7B6 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo-BikeCollectionMemoUITests/Pods-BikeCollectionMemo-BikeCollectionMemoUITests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo-BikeCollectionMemoUITests/Pods-BikeCollectionMemo-BikeCollectionMemoUITests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo-BikeCollectionMemoUITests/Pods-BikeCollectionMemo-BikeCollectionMemoUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C0C13FCDC3BED7B212B1F5BE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BikeCollectionMemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E433EB2035874A7B5A033673 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo/Pods-BikeCollectionMemo-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo/Pods-BikeCollectionMemo-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo/Pods-BikeCollectionMemo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -421,10 +531,9 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DWARF_DSYM_FOLDER_PATH = "$(CONFIGURATION_BUILD_DIR)";
-				DWARF_DSYM_FILE_NAME = "$(EXECUTABLE_NAME).dSYM";
-				STRIP_INSTALLED_PRODUCT = NO;
 				DEVELOPMENT_TEAM = V47R62H7V3;
+				DWARF_DSYM_FILE_NAME = "$(EXECUTABLE_NAME).dSYM";
+				DWARF_DSYM_FOLDER_PATH = "$(CONFIGURATION_BUILD_DIR)";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -441,6 +550,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -448,6 +558,7 @@
 		};
 		28AA083B2E0BE4AC00B718BC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 680424565BAC3C06466D078E /* Pods-BikeCollectionMemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -455,8 +566,8 @@
 				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = V47R62H7V3;
-				DWARF_DSYM_FOLDER_PATH = "$(CONFIGURATION_BUILD_DIR)";
 				DWARF_DSYM_FILE_NAME = "$(EXECUTABLE_NAME).dSYM";
+				DWARF_DSYM_FOLDER_PATH = "$(CONFIGURATION_BUILD_DIR)";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BikeCollectionMemo/Info.plist;
@@ -472,16 +583,16 @@
 				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Ks.BikeCollectionMemo;
 				PRODUCT_NAME = "モトメモ";
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
 		};
 		28AA083C2E0BE4AC00B718BC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9C9C1BFC484FA4CD9CB84B8C /* Pods-BikeCollectionMemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -489,8 +600,8 @@
 				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = V47R62H7V3;
-				DWARF_DSYM_FOLDER_PATH = "$(CONFIGURATION_BUILD_DIR)";
 				DWARF_DSYM_FILE_NAME = "$(EXECUTABLE_NAME).dSYM";
+				DWARF_DSYM_FOLDER_PATH = "$(CONFIGURATION_BUILD_DIR)";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BikeCollectionMemo/Info.plist;
@@ -506,16 +617,16 @@
 				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Ks.BikeCollectionMemo;
 				PRODUCT_NAME = "モトメモ";
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Release;
 		};
 		28AA083E2E0BE4AC00B718BC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8D0E54C5761E377D45DBEEDE /* Pods-BikeCollectionMemoTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -535,6 +646,7 @@
 		};
 		28AA083F2E0BE4AC00B718BC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E9518BED0AE88D9C91FC529B /* Pods-BikeCollectionMemoTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -554,6 +666,7 @@
 		};
 		28AA08412E0BE4AC00B718BC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8ED9FC835F2BCA93E176EB37 /* Pods-BikeCollectionMemo-BikeCollectionMemoUITests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
@@ -571,6 +684,7 @@
 		};
 		28AA08422E0BE4AC00B718BC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D9511570F68F10D41F3A08AC /* Pods-BikeCollectionMemo-BikeCollectionMemoUITests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
@@ -626,25 +740,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		28D1B9212E391F6600EBD87C /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 12.8.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		28D1B9232E39220300EBD87C /* GoogleMobileAds */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 28D1B9212E391F6600EBD87C /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
-			productName = GoogleMobileAds;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 28AA08112E0BE4AB00B718BC /* Project object */;
 }

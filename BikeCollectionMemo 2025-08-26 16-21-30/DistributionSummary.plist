@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>モトメモ.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>buildNumber</key>
+			<string>4</string>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>15538C4C86949C49739D103D59010C33F0F856BE</string>
+				<key>dateExpires</key>
+				<string>2026/05/14</string>
+				<key>type</key>
+				<string>Cloud Managed Apple Distribution</string>
+			</dict>
+			<key>embeddedBinaries</key>
+			<array>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>buildNumber</key>
+					<string>1280</string>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>15538C4C86949C49739D103D59010C33F0F856BE</string>
+						<key>dateExpires</key>
+						<string>2026/05/14</string>
+						<key>type</key>
+						<string>Cloud Managed Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>GoogleMobileAds.framework</string>
+					<key>symbols</key>
+					<true/>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>V47R62H7V3</string>
+						<key>name</key>
+						<string>shingo kakihara</string>
+					</dict>
+					<key>versionNumber</key>
+					<string>12.8.0</string>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>buildNumber</key>
+					<string>1</string>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>15538C4C86949C49739D103D59010C33F0F856BE</string>
+						<key>dateExpires</key>
+						<string>2026/05/14</string>
+						<key>type</key>
+						<string>Cloud Managed Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>UserMessagingPlatform.framework</string>
+					<key>symbols</key>
+					<true/>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>V47R62H7V3</string>
+						<key>name</key>
+						<string>shingo kakihara</string>
+					</dict>
+					<key>versionNumber</key>
+					<string>3.0.0</string>
+				</dict>
+			</array>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>V47R62H7V3.Ks.BikeCollectionMemo</string>
+				<key>beta-reports-active</key>
+				<true/>
+				<key>com.apple.developer.team-identifier</key>
+				<string>V47R62H7V3</string>
+				<key>get-task-allow</key>
+				<false/>
+			</dict>
+			<key>name</key>
+			<string>モトメモ.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>fe7d66b8-a230-4f40-bac6-a9ab5cc00988</string>
+				<key>dateExpires</key>
+				<string>2026/05/14</string>
+				<key>name</key>
+				<string>iOS Team Store Provisioning Profile: Ks.BikeCollectionMemo</string>
+			</dict>
+			<key>symbols</key>
+			<true/>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>V47R62H7V3</string>
+				<key>name</key>
+				<string>shingo kakihara</string>
+			</dict>
+			<key>versionNumber</key>
+			<string>1.3.0</string>
+		</dict>
+	</array>
+</dict>
+</plist>
