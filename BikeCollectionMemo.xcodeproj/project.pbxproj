@@ -128,6 +128,7 @@
 				28AA08152E0BE4AB00B718BC /* Sources */,
 				28AA08162E0BE4AB00B718BC /* Frameworks */,
 				28AA08172E0BE4AB00B718BC /* Resources */,
+				28D1B9FF2E39330000EBD87C /* Copy SPM dSYMs */,
 			);
 			buildRules = (
 			);
@@ -260,6 +261,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		28D1B9FF2E39330000EBD87C /* Copy SPM dSYMs */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy SPM dSYMs";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Copy dSYMs for SPM frameworks to ensure they're included in the archive\nif [ \"$CONFIGURATION\" = \"Release\" ]; then\n    # Find and copy GoogleMobileAds dSYM\n    find \"$BUILT_PRODUCTS_DIR\" -name \"GoogleMobileAds.framework.dSYM\" -exec cp -R {} \"$DWARF_DSYM_FOLDER_PATH/\" \\;\n    \n    # Find and copy UserMessagingPlatform dSYM\n    find \"$BUILT_PRODUCTS_DIR\" -name \"UserMessagingPlatform.framework.dSYM\" -exec cp -R {} \"$DWARF_DSYM_FOLDER_PATH/\" \\;\n    \n    # Also search in DerivedData for SPM dSYMs\n    find \"$BUILD_DIR\" -name \"GoogleMobileAds.framework.dSYM\" -exec cp -R {} \"$DWARF_DSYM_FOLDER_PATH/\" \\;\n    find \"$BUILD_DIR\" -name \"UserMessagingPlatform.framework.dSYM\" -exec cp -R {} \"$DWARF_DSYM_FOLDER_PATH/\" \\;\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		28AA08152E0BE4AB00B718BC /* Sources */ = {
