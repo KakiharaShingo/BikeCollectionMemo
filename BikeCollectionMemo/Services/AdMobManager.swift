@@ -16,14 +16,8 @@ class AdMobManager: NSObject, ObservableObject, FullScreenContentDelegate {
     let testBannerAdUnitID = "ca-app-pub-3940256099942544/2934735716"
     let testInterstitialAdUnitID = "ca-app-pub-3940256099942544/4411468910"
     
-    // デバッグモード設定（ビルド設定に基づいて自動判定）
-    let isDebugMode: Bool = {
-        #if DEBUG
-        return true
-        #else
-        return false
-        #endif
-    }()
+    // デバッグモード設定（本番用に強制的にfalse）
+    let isDebugMode: Bool = false
     
     @Published var isAdLoaded = false
     @Published var showAds = true
