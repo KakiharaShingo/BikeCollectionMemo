@@ -8,6 +8,12 @@ struct CheckInMapView: View {
         center: CLLocationCoordinate2D(latitude: 35.6762, longitude: 139.6503), // 東京
         span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
     )
+    @State private var mapPosition = MapCameraPosition.region(
+        MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 35.6762, longitude: 139.6503),
+            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        )
+    )
     @State private var selectedLocation: CheckInLocation?
     @State private var showingCheckInForm = false
     @State private var showingLocationPermissionAlert = false
@@ -19,56 +25,44 @@ struct CheckInMapView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Map(coordinateRegion: $region, annotationItems: allLocations) { location in
-                    MapAnnotation(coordinate: location.coordinate) {
-                        LocationPinView(location: location) {
-                            selectedLocation = location
-                            showingCheckInForm = true
+                Map(position: $mapPosition) {
+                    ForEach(allLocations) { location in
+                        Annotation(location.name, coordinate: location.coordinate) {
+                            LocationPinView(location: location) {
+                                selectedLocation = location
+                                showingCheckInForm = true
+                            }
+                        }
+                    }
+
+                    // 検索結果のピンを表示
+                    if let searchedLocation = searchedLocation {
+                        Annotation(searchedLocation.name, coordinate: searchedLocation.coordinate) {
+                            SearchedLocationPinView(name: searchedLocation.name) {
+                                // 検索された場所をチェックイン場所として設定
+                                let newLocation = CheckInLocation(
+                                    name: searchedLocation.name,
+                                    address: nil,
+                                    latitude: searchedLocation.coordinate.latitude,
+                                    longitude: searchedLocation.coordinate.longitude,
+                                    category: .other,
+                                    isPreset: false
+                                )
+                                selectedLocation = newLocation
+                                showingCheckInForm = true
+                            }
+                        }
+                    }
+
+                    // 新規追加用の一時ピンを表示
+                    if let tempLocation = tempLocationForAdd {
+                        Annotation("新しい場所", coordinate: tempLocation) {
+                            TempLocationPinView {
+                                showingAddLocationFromMap = true
+                            }
                         }
                     }
                 }
-                .overlay(
-                    // 検索結果のピンを表示
-                    Group {
-                        if let searchedLocation = searchedLocation {
-                            Map(coordinateRegion: .constant(region), annotationItems: [SearchedLocationItem(coordinate: searchedLocation.coordinate, name: searchedLocation.name)]) { item in
-                                MapAnnotation(coordinate: item.coordinate) {
-                                    SearchedLocationPinView(name: item.name) {
-                                        // 検索された場所をチェックイン場所として設定
-                                        let newLocation = CheckInLocation(
-                                            name: item.name,
-                                            address: nil,
-                                            latitude: item.coordinate.latitude,
-                                            longitude: item.coordinate.longitude,
-                                            category: .other,
-                                            isPreset: false
-                                        )
-                                        selectedLocation = newLocation
-                                        showingCheckInForm = true
-                                    }
-                                }
-                            }
-                            .allowsHitTesting(false)
-                            .background(Color.clear)
-                        }
-                    }
-                )
-                .overlay(
-                    // 新規追加用の一時ピンを表示
-                    Group {
-                        if let tempLocation = tempLocationForAdd {
-                            Map(coordinateRegion: .constant(region), annotationItems: [TempLocationItem(coordinate: tempLocation)]) { item in
-                                MapAnnotation(coordinate: item.coordinate) {
-                                    TempLocationPinView {
-                                        showingAddLocationFromMap = true
-                                    }
-                                }
-                            }
-                            .allowsHitTesting(true)
-                            .background(Color.clear)
-                        }
-                    }
-                )
                 .onTapGesture { location in
                     // 一時ピン以外の場所をタップした場合、一時ピンをクリア
                     if tempLocationForAdd != nil {
@@ -100,7 +94,12 @@ struct CheckInMapView: View {
                 .onChange(of: locationManager.currentLocation) { _, newLocation in
                     if let location = newLocation {
                         withAnimation(.easeInOut(duration: 1.0)) {
-                            region.center = location
+                            let newRegion = MKCoordinateRegion(
+                                center: location,
+                                span: region.span
+                            )
+                            mapPosition = .region(newRegion)
+                            region = newRegion
                         }
                     }
                 }
@@ -215,8 +214,12 @@ struct CheckInMapView: View {
                 SearchableLocationView { coordinate, locationName in
                     // 検索結果の場所にマップを移動
                     withAnimation(.easeInOut(duration: 1.0)) {
-                        region.center = coordinate
-                        region.span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                        let newRegion = MKCoordinateRegion(
+                            center: coordinate,
+                            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                        )
+                        mapPosition = .region(newRegion)
+                        region = newRegion
                     }
                     // 検索された場所を表示用に保存
                     searchedLocation = (coordinate: coordinate, name: locationName)
@@ -269,8 +272,12 @@ struct CheckInMapView: View {
     private func centerOnCurrentLocation() {
         if let currentLocation = locationManager.currentLocation {
             withAnimation(.easeInOut(duration: 1.0)) {
-                region.center = currentLocation
-                region.span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                let newRegion = MKCoordinateRegion(
+                    center: currentLocation,
+                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                )
+                mapPosition = .region(newRegion)
+                region = newRegion
             }
         } else {
             // 位置情報がない場合は許可を求める
@@ -494,17 +501,6 @@ struct AddLocationView: View {
 }
 
 // MARK: - Supporting Views and Models
-
-struct SearchedLocationItem: Identifiable {
-    let id = UUID()
-    let coordinate: CLLocationCoordinate2D
-    let name: String
-}
-
-struct TempLocationItem: Identifiable {
-    let id = UUID()
-    let coordinate: CLLocationCoordinate2D
-}
 
 struct SearchedLocationPinView: View {
     let name: String

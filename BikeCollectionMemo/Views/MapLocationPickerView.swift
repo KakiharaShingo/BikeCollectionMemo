@@ -9,6 +9,7 @@ struct MapLocationPickerView: View {
     @StateObject private var locationManager = LocationManager.shared
 
     @State private var region: MKCoordinateRegion
+    @State private var mapPosition: MapCameraPosition
     @State private var selectedCoordinate: CLLocationCoordinate2D?
     @State private var isDragging = false
 
@@ -18,10 +19,12 @@ struct MapLocationPickerView: View {
 
         // 初期位置を設定（提供されている場合はその位置、なければ東京）
         let center = initialLocation ?? CLLocationCoordinate2D(latitude: 35.6762, longitude: 139.6503)
-        self._region = State(initialValue: MKCoordinateRegion(
+        let initialRegion = MKCoordinateRegion(
             center: center,
             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        ))
+        )
+        self._region = State(initialValue: initialRegion)
+        self._mapPosition = State(initialValue: .region(initialRegion))
         self._selectedCoordinate = State(initialValue: initialLocation)
     }
 
@@ -29,9 +32,12 @@ struct MapLocationPickerView: View {
         NavigationView {
             ZStack {
                 // メインのマップ
-                Map(coordinateRegion: $region)
+                Map(position: $mapPosition)
                     .onAppear {
                         setupInitialLocation()
+                    }
+                    .onMapCameraChange(frequency: .continuous) { context in
+                        region = context.region
                     }
                     .gesture(
                         DragGesture()
@@ -202,12 +208,22 @@ struct MapLocationPickerView: View {
     private func setupInitialLocation() {
         if let initialLocation = initialLocation {
             // 初期位置が提供されている場合はその位置を使用
-            region.center = initialLocation
+            let newRegion = MKCoordinateRegion(
+                center: initialLocation,
+                span: region.span
+            )
+            mapPosition = .region(newRegion)
+            region = newRegion
             selectedCoordinate = initialLocation
         } else if let currentLocation = locationManager.currentLocation {
             // 現在位置が利用可能な場合はその位置を使用
             withAnimation(.easeInOut(duration: 1.0)) {
-                region.center = currentLocation
+                let newRegion = MKCoordinateRegion(
+                    center: currentLocation,
+                    span: region.span
+                )
+                mapPosition = .region(newRegion)
+                region = newRegion
                 selectedCoordinate = currentLocation
             }
         }
@@ -217,8 +233,12 @@ struct MapLocationPickerView: View {
     private func centerOnCurrentLocation() {
         if let currentLocation = locationManager.currentLocation {
             withAnimation(.easeInOut(duration: 1.0)) {
-                region.center = currentLocation
-                region.span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                let newRegion = MKCoordinateRegion(
+                    center: currentLocation,
+                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                )
+                mapPosition = .region(newRegion)
+                region = newRegion
                 selectedCoordinate = currentLocation
             }
         } else {
