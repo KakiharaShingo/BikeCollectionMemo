@@ -4,5 +4,7 @@
 <dict>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-7155393284008150~6824903344</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>チェックイン機能で現在地を取得し、近くのスポットを表示するために位置情報を使用します。</string>
 </dict>
 </plist>

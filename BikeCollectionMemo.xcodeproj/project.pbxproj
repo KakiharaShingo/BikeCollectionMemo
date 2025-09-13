@@ -31,8 +31,8 @@
 
 /* Begin PBXFileReference section */
 		28AA08192E0BE4AB00B718BC /* モトメモ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "モトメモ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		28AA08262E0BE4AC00B718BC /* BikeCollectionMemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BikeCollectionMemoTests.xctest; path = "モトメモ.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		28AA08302E0BE4AC00B718BC /* BikeCollectionMemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = BikeCollectionMemoUITests.xctest; path = "モトメモ.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		28AA08262E0BE4AC00B718BC /* モトメモ.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "モトメモ.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		28AA08302E0BE4AC00B718BC /* モトメモ.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "モトメモ.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E00B73E9E1ACB50EE1F36F9 /* Pods_BikeCollectionMemo_BikeCollectionMemoUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BikeCollectionMemo_BikeCollectionMemoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		680424565BAC3C06466D078E /* Pods-BikeCollectionMemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BikeCollectionMemo.debug.xcconfig"; path = "Target Support Files/Pods-BikeCollectionMemo/Pods-BikeCollectionMemo.debug.xcconfig"; sourceTree = "<group>"; };
 		8D0E54C5761E377D45DBEEDE /* Pods-BikeCollectionMemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BikeCollectionMemoTests.debug.xcconfig"; path = "Target Support Files/Pods-BikeCollectionMemoTests/Pods-BikeCollectionMemoTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -65,15 +65,11 @@
 		};
 		28AA08292E0BE4AC00B718BC /* BikeCollectionMemoTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = BikeCollectionMemoTests;
 			sourceTree = "<group>";
 		};
 		28AA08332E0BE4AC00B718BC /* BikeCollectionMemoUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = BikeCollectionMemoUITests;
 			sourceTree = "<group>";
 		};
@@ -123,8 +119,8 @@
 			isa = PBXGroup;
 			children = (
 				28AA08192E0BE4AB00B718BC /* モトメモ.app */,
-				28AA08262E0BE4AC00B718BC /* BikeCollectionMemoTests.xctest */,
-				28AA08302E0BE4AC00B718BC /* BikeCollectionMemoUITests.xctest */,
+				28AA08262E0BE4AC00B718BC /* モトメモ.xctest */,
+				28AA08302E0BE4AC00B718BC /* モトメモ.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -149,7 +145,6 @@
 				8D0E54C5761E377D45DBEEDE /* Pods-BikeCollectionMemoTests.debug.xcconfig */,
 				E9518BED0AE88D9C91FC529B /* Pods-BikeCollectionMemoTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -197,7 +192,7 @@
 			);
 			name = BikeCollectionMemoTests;
 			productName = BikeCollectionMemoTests;
-			productReference = 28AA08262E0BE4AC00B718BC /* BikeCollectionMemoTests.xctest */;
+			productReference = 28AA08262E0BE4AC00B718BC /* モトメモ.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		28AA082F2E0BE4AC00B718BC /* BikeCollectionMemoUITests */ = {
@@ -220,7 +215,7 @@
 			);
 			name = BikeCollectionMemoUITests;
 			productName = BikeCollectionMemoUITests;
-			productReference = 28AA08302E0BE4AC00B718BC /* BikeCollectionMemoUITests.xctest */;
+			productReference = 28AA08302E0BE4AC00B718BC /* モトメモ.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -344,9 +339,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo-BikeCollectionMemoUITests/Pods-BikeCollectionMemo-BikeCollectionMemoUITests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo-BikeCollectionMemoUITests/Pods-BikeCollectionMemo-BikeCollectionMemoUITests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -383,9 +382,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo/Pods-BikeCollectionMemo-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo/Pods-BikeCollectionMemo-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
