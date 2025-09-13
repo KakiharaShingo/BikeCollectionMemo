@@ -25,7 +25,8 @@ struct CheckInMapView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Map(position: $mapPosition) {
+                MapReader { mapProxy in
+                    Map(position: $mapPosition) {
                     ForEach(allLocations) { location in
                         Annotation(location.name, coordinate: location.coordinate) {
                             LocationPinView(location: location) {
@@ -63,31 +64,36 @@ struct CheckInMapView: View {
                         }
                     }
                 }
-                .onTapGesture { location in
-                    // 一時ピン以外の場所をタップした場合、一時ピンをクリア
-                    if tempLocationForAdd != nil {
-                        withAnimation(.easeOut(duration: 0.3)) {
-                            tempLocationForAdd = nil
-                        }
-                    }
-                }
-                .gesture(
-                    LongPressGesture(minimumDuration: 0.5)
-                        .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
-                        .onEnded { value in
-                            switch value {
-                            case .second(true, let drag):
-                                if let dragLocation = drag?.location {
-                                    let coordinate = coordinateFromScreenPoint(dragLocation)
-                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                                        tempLocationForAdd = coordinate
-                                    }
-                                }
-                            default:
-                                break
+                    .onTapGesture { location in
+                        // 一時ピン以外の場所をタップした場合、一時ピンをクリア
+                        if tempLocationForAdd != nil {
+                            withAnimation(.easeOut(duration: 0.3)) {
+                                tempLocationForAdd = nil
                             }
                         }
-                )
+                    }
+                    .onMapCameraChange(frequency: .onEnd) { context in
+                        // regionを更新してcoordinateFromScreenPointが正確に動作するようにする
+                        region = context.region
+                    }
+                    .gesture(
+                        LongPressGesture(minimumDuration: 0.5)
+                            .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
+                            .onEnded { value in
+                                switch value {
+                                case .second(true, let drag):
+                                    if let dragLocation = drag?.location,
+                                       let coordinate = mapProxy.convert(dragLocation, from: .local) {
+                                        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                            tempLocationForAdd = coordinate
+                                        }
+                                    }
+                                default:
+                                    break
+                                }
+                            }
+                    )
+                }
                 .onAppear {
                     setupMap()
                 }
@@ -286,22 +292,6 @@ struct CheckInMapView: View {
         }
     }
 
-    private func coordinateFromScreenPoint(_ point: CGPoint) -> CLLocationCoordinate2D {
-        // 簡単な近似計算（実際のMapKitの座標変換はより複雑）
-        let mapWidth = UIScreen.main.bounds.width
-        let mapHeight = UIScreen.main.bounds.height
-
-        let xRatio = point.x / mapWidth
-        let yRatio = point.y / mapHeight
-
-        let longitudeDelta = region.span.longitudeDelta
-        let latitudeDelta = region.span.latitudeDelta
-
-        let longitude = region.center.longitude + (xRatio - 0.5) * longitudeDelta
-        let latitude = region.center.latitude - (yRatio - 0.5) * latitudeDelta
-
-        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    }
 }
 
 struct LocationPinView: View {
