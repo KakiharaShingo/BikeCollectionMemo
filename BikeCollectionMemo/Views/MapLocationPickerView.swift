@@ -262,6 +262,8 @@ struct MapLocationPickerWithInstructions: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var showingPicker = false
+    @State private var selectedCoordinate: CLLocationCoordinate2D?
+    @State private var currentStep = 1
 
     var body: some View {
         NavigationView {
@@ -289,6 +291,8 @@ struct MapLocationPickerWithInstructions: View {
             }
             .sheet(isPresented: $showingPicker) {
                 MapLocationPickerView(initialLocation: initialLocation) { coordinate in
+                    selectedCoordinate = coordinate
+                    currentStep = 3
                     onLocationSelected(coordinate)
                 }
             }
@@ -299,44 +303,69 @@ struct MapLocationPickerWithInstructions: View {
     private var instructionsSection: some View {
         VStack(alignment: .leading, spacing: Constants.Spacing.medium) {
             HStack {
-                Image(systemName: "map.circle")
+                Image(systemName: selectedCoordinate != nil ? "checkmark.circle" : "map.circle")
                     .font(.title)
-                    .foregroundColor(.blue)
+                    .foregroundColor(selectedCoordinate != nil ? .green : .blue)
 
-                Text("マップから位置を選択")
+                Text(selectedCoordinate != nil ? "位置が選択されました" : "マップから位置を選択")
                     .font(.headline)
                     .fontWeight(.bold)
+                    .foregroundColor(selectedCoordinate != nil ? .green : .primary)
             }
 
-            VStack(alignment: .leading, spacing: Constants.Spacing.small) {
-                InstructionRow(
-                    icon: "1.circle.fill",
-                    color: .blue,
-                    text: "マップを表示して目的の場所を探します"
-                )
+            if selectedCoordinate != nil {
+                // 選択完了時の表示
+                VStack(alignment: .leading, spacing: Constants.Spacing.small) {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.green)
+                        Text("位置の選択が完了しました")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                    }
 
-                InstructionRow(
-                    icon: "2.circle.fill",
-                    color: .blue,
-                    text: "ドラッグして赤いピンを目的の位置に合わせます"
-                )
+                    Text("緯度: \(selectedCoordinate!.latitude, specifier: "%.6f")")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
 
-                InstructionRow(
-                    icon: "3.circle.fill",
-                    color: .blue,
-                    text: "「この位置を選択」で位置を確定します"
-                )
+                    Text("経度: \(selectedCoordinate!.longitude, specifier: "%.6f")")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            } else {
+                // 通常の手順表示
+                VStack(alignment: .leading, spacing: Constants.Spacing.small) {
+                    InstructionRow(
+                        icon: currentStep >= 1 ? "1.circle.fill" : "1.circle",
+                        color: currentStep >= 1 ? .blue : .gray,
+                        text: "マップを表示して目的の場所を探します"
+                    )
+
+                    InstructionRow(
+                        icon: currentStep >= 2 ? "2.circle.fill" : "2.circle",
+                        color: currentStep >= 2 ? .blue : .gray,
+                        text: "ドラッグして赤いピンを目的の位置に合わせます"
+                    )
+
+                    InstructionRow(
+                        icon: currentStep >= 3 ? "3.circle.fill" : "3.circle",
+                        color: currentStep >= 3 ? .green : .gray,
+                        text: "「この位置を選択」で位置を確定します"
+                    )
+                }
             }
         }
         .padding(Constants.Spacing.medium)
         .background(
             RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
-                .fill(Color.blue.opacity(0.1))
+                .fill((selectedCoordinate != nil ? Color.green : Color.blue).opacity(0.1))
                 .overlay(
                     RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
-                        .stroke(Color.blue.opacity(0.3), lineWidth: 1)
+                        .stroke((selectedCoordinate != nil ? Color.green : Color.blue).opacity(0.3), lineWidth: 1)
                 )
         )
+        .animation(.easeInOut(duration: 0.3), value: currentStep)
+        .animation(.easeInOut(duration: 0.3), value: selectedCoordinate)
     }
 
     // MARK: - Preview Map Section
@@ -374,12 +403,20 @@ struct MapLocationPickerWithInstructions: View {
 
     // MARK: - Action Button
     private var actionButton: some View {
-        Button(action: { showingPicker = true }) {
+        Button(action: {
+            if currentStep == 1 {
+                currentStep = 2
+                showingPicker = true
+            } else if selectedCoordinate != nil {
+                // 選択完了後の処理
+                dismiss()
+            }
+        }) {
             HStack {
-                Image(systemName: "map")
+                Image(systemName: selectedCoordinate != nil ? "checkmark" : "map")
                     .font(.headline)
 
-                Text("マップを開く")
+                Text(selectedCoordinate != nil ? "完了" : "マップを開く")
                     .font(.headline)
                     .fontWeight(.semibold)
             }
@@ -388,7 +425,7 @@ struct MapLocationPickerWithInstructions: View {
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
-                    .fill(Color.blue)
+                    .fill(selectedCoordinate != nil ? Color.green : Color.blue)
             )
         }
     }
