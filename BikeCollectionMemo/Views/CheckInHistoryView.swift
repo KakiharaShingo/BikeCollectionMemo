@@ -28,6 +28,18 @@ struct CheckInHistoryView: View {
 
         return records
     }
+    
+    // 直近のコースを取得（1つだけ）
+    var recentCourse: CheckInRecord? {
+        guard let mostRecent = checkInManager.checkInRecords.first else { return nil }
+        return mostRecent
+    }
+    
+    // 直近のコース以外のレコードを取得
+    var otherRecords: [CheckInRecord] {
+        guard let recent = recentCourse else { return filteredRecords }
+        return filteredRecords.filter { $0.id != recent.id }
+    }
 
     var body: some View {
         NavigationView {
@@ -123,10 +135,29 @@ struct CheckInHistoryView: View {
     // MARK: - History List
     private var historyListView: some View {
         List {
-            ForEach(groupedRecords, id: \.key) { group in
-                Section(header: Text(group.key).font(.subheadline).fontWeight(.semibold)) {
-                    ForEach(group.value) { record in
-                        CheckInRecordRow(record: record)
+            // 直近のコースセクション
+            if let recent = recentCourse {
+                Section(header: 
+                    HStack {
+                        Image(systemName: "clock.fill")
+                            .foregroundColor(.blue)
+                        Text("直近のチェックイン")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                    }
+                ) {
+                    CheckInRecordRow(record: recent)
+                        .background(Color.blue.opacity(0.05))
+                }
+            }
+            
+            // その他の履歴
+            if !otherRecords.isEmpty {
+                ForEach(groupedOtherRecords, id: \.key) { group in
+                    Section(header: Text(group.key).font(.subheadline).fontWeight(.semibold)) {
+                        ForEach(group.value) { record in
+                            CheckInRecordRow(record: record)
+                        }
                     }
                 }
             }
@@ -136,6 +167,16 @@ struct CheckInHistoryView: View {
 
     private var groupedRecords: [(key: String, value: [CheckInRecord])] {
         let grouped = Dictionary(grouping: filteredRecords) { record in
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy年MM月"
+            return formatter.string(from: record.timestamp)
+        }
+
+        return grouped.sorted { $0.key > $1.key }
+    }
+    
+    private var groupedOtherRecords: [(key: String, value: [CheckInRecord])] {
+        let grouped = Dictionary(grouping: otherRecords) { record in
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy年MM月"
             return formatter.string(from: record.timestamp)

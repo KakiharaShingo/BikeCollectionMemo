@@ -13,6 +13,7 @@ struct CourseSelectionView: View {
     @State private var selectedBike: Bike?
     @State private var showingCustomCourseCreation = false
     @State private var showingLocationPicker = false
+    @State private var showingGpsAccuracyAlert = false
 
     var body: some View {
         NavigationView {
@@ -124,29 +125,93 @@ struct CourseSelectionView: View {
 
     // MARK: - Start Button
     private var startButton: some View {
-        Button(action: {
-            guard let course = selectedCourse else { return }
-            onStart(course, selectedBike)
-            dismiss()
-        }) {
-            HStack {
-                Image(systemName: "play.circle")
-                    .font(.headline)
+        VStack(spacing: Constants.Spacing.medium) {
+            // コース選択なしで開始するボタン
+            Button(action: {
+                startWithoutCourse()
+            }) {
+                HStack {
+                    Image(systemName: "play.circle")
+                        .font(.headline)
 
-                Text("計測開始")
-                    .font(.headline)
-                    .fontWeight(.semibold)
+                    Text("フリーモードで開始")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
+                        .fill(Color.blue)
+                )
             }
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
-                    .fill(selectedCourse != nil ? Color.green : Color.gray)
-            )
+            
+            // コース選択ありで開始するボタン
+            Button(action: {
+                guard let course = selectedCourse else { return }
+                startWithCourse(course)
+            }) {
+                HStack {
+                    Image(systemName: "play.circle.fill")
+                        .font(.headline)
+
+                    Text("コースモードで開始")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
+                        .fill(selectedCourse != nil ? Color.green : Color.gray)
+                )
+            }
+            .disabled(selectedCourse == nil)
         }
-        .disabled(selectedCourse == nil)
         .padding(.top, Constants.Spacing.large)
+        .alert("GPS精度が低いです", isPresented: $showingGpsAccuracyAlert) {
+            Button("続行") {
+                guard let course = selectedCourse else { return }
+                onStart(course, selectedBike)
+                dismiss()
+            }
+            Button("キャンセル", role: .cancel) { }
+        } message: {
+            Text("現在のGPS精度は\(String(format: "%.0f", lapTimerManager.gpsAccuracy))メートルです。精度が低いと正確な計測ができません。屋外で計測を開始することをお勧めします。")
+        }
+    }
+    
+    private func startWithoutCourse() {
+        // GPS精度を確認
+        if !lapTimerManager.checkGpsAccuracy() {
+            showingGpsAccuracyAlert = true
+            return
+        }
+        
+        // フリーモード用の仮想コースを作成
+        let freeModeCourse = TimingCourse(
+            name: "フリーモード",
+            startFinishLine: CLLocationCoordinate2D(latitude: 0, longitude: 0), // ダミー座標
+            toleranceRadius: 0, // 自動ラップ検出を無効化
+            expectedLapDistance: nil,
+            isPreset: false
+        )
+        
+        onStart(freeModeCourse, selectedBike)
+        dismiss()
+    }
+    
+    private func startWithCourse(_ course: TimingCourse) {
+        // GPS精度を確認
+        if !lapTimerManager.checkGpsAccuracy() {
+            showingGpsAccuracyAlert = true
+            return
+        }
+        
+        onStart(course, selectedBike)
+        dismiss()
     }
 }
 

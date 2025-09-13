@@ -10,6 +10,8 @@ class LocationManager: NSObject, ObservableObject {
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var currentAccuracy: Double = 0 // メートル
+    @Published var lastLocation: CLLocation?
 
     private let locationManager = CLLocationManager()
 
@@ -143,6 +145,8 @@ extension LocationManager: CLLocationManagerDelegate {
 
         Task { @MainActor in
             self.currentLocation = location.coordinate
+            self.currentAccuracy = location.horizontalAccuracy
+            self.lastLocation = location
             self.isLoading = false
             self.errorMessage = nil
         }

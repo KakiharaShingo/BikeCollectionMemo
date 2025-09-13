@@ -1,6 +1,7 @@
 import Foundation
 import CoreLocation
 import Combine
+import UIKit
 
 @MainActor
 class LapTimerManager: NSObject, ObservableObject {
@@ -16,6 +17,8 @@ class LapTimerManager: NSObject, ObservableObject {
     @Published var maxSpeed: Double = 0 // m/s
     @Published var distance: Double = 0 // メートル
     @Published var isNearStartLine: Bool = false
+    @Published var gpsAccuracy: Double = 0 // メートル
+    @Published var isGpsAccuracyGood: Bool = true
 
     // MARK: - Private Properties
     private var timer: Timer?
@@ -37,6 +40,7 @@ class LapTimerManager: NSObject, ObservableObject {
     override init() {
         super.init()
         setupLocationTracking()
+        setupBackgroundProcessing()
     }
 
     // MARK: - Session Management
@@ -60,6 +64,16 @@ class LapTimerManager: NSObject, ObservableObject {
 
         startTimer()
         locationManager.startLocationUpdates()
+    }
+    
+    func checkGpsAccuracy() -> Bool {
+        guard locationManager.currentLocation != nil else { return false }
+        
+        let accuracy = locationManager.currentAccuracy
+        gpsAccuracy = accuracy
+        isGpsAccuracyGood = accuracy <= 20.0 && accuracy > 0 // 20メートル以内で有効な値を良好とみなす
+        
+        return isGpsAccuracyGood
     }
 
     func pauseSession() {
@@ -183,6 +197,117 @@ class LapTimerManager: NSObject, ObservableObject {
             }
             .store(in: &cancellables)
     }
+    
+    // MARK: - Background Processing
+    private func setupBackgroundProcessing() {
+        // アプリのライフサイクルイベントを監視
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appWillTerminate),
+            name: UIApplication.willTerminateNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appDidEnterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func appWillTerminate() {
+        saveCurrentSessionIfNeeded()
+    }
+    
+    @objc private func appDidEnterBackground() {
+        // バックグラウンドでも計測を継続するための処理
+        if timerState == .tracking {
+            // バックグラウンドタスクを開始
+            startBackgroundTask()
+        }
+    }
+    
+    @objc private func appWillEnterForeground() {
+        // フォアグラウンドに戻った時の処理
+        endBackgroundTask()
+    }
+    
+    private var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
+    
+    private func startBackgroundTask() {
+        backgroundTaskID = UIApplication.shared.beginBackgroundTask(withName: "LapTimerTracking") {
+            // バックグラウンドタスクの期限が近づいた時の処理
+            self.endBackgroundTask()
+        }
+    }
+    
+    private func endBackgroundTask() {
+        if backgroundTaskID != .invalid {
+            UIApplication.shared.endBackgroundTask(backgroundTaskID)
+            backgroundTaskID = .invalid
+        }
+    }
+    
+    private func saveCurrentSessionIfNeeded() {
+        guard let session = currentSession, timerState == .tracking else { return }
+        
+        // 現在のセッションを一時保存
+        let tempSession = LapTimeSession(
+            courseId: session.courseId,
+            courseName: session.courseName,
+            startTime: session.startTime,
+            endTime: Date(),
+            bikeId: session.bikeId,
+            bikeName: session.bikeName,
+            laps: laps,
+            totalDistance: distance,
+            startLocation: session.startLocation,
+            trackPoints: trackPoints
+        )
+        
+        // 一時保存用のキーで保存
+        let tempKey = "temp_lap_session"
+        if let data = try? JSONEncoder().encode(tempSession) {
+            UserDefaults.standard.set(data, forKey: tempKey)
+        }
+    }
+    
+    func restoreSessionIfNeeded() {
+        let tempKey = "temp_lap_session"
+        guard let data = UserDefaults.standard.data(forKey: tempKey),
+              let tempSession = try? JSONDecoder().decode(LapTimeSession.self, from: data) else {
+            return
+        }
+        
+        // 一時保存されたセッションを復元
+        currentSession = tempSession
+        laps = tempSession.laps
+        distance = tempSession.totalDistance
+        trackPoints = tempSession.trackPoints
+        
+        // 一時保存データを削除
+        UserDefaults.standard.removeObject(forKey: tempKey)
+        
+        // セッションを再開
+        if let course = getSavedCourses().first(where: { $0.id == tempSession.courseId }) {
+            timerState = .tracking
+            currentCourse = course
+            startTime = tempSession.startTime
+            lapStartTime = tempSession.startTime
+            currentLap = tempSession.laps.count + 1
+            
+            startTimer()
+            locationManager.startLocationUpdates()
+        }
+    }
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -217,8 +342,8 @@ class LapTimerManager: NSObject, ObservableObject {
 
         lastLocation = location
 
-        // スタート/フィニッシュライン通過判定
-        if let course = currentCourse {
+        // スタート/フィニッシュライン通過判定（コースモードのみ）
+        if let course = currentCourse, course.toleranceRadius > 0 {
             let distanceToStartLine = location.distance(from: CLLocation(
                 latitude: course.startFinishLine.latitude,
                 longitude: course.startFinishLine.longitude
@@ -230,6 +355,9 @@ class LapTimerManager: NSObject, ObservableObject {
             if currentLap > 1 && isNearStartLine && !wasNearStartLine {
                 completeLap()
             }
+        } else {
+            // フリーモードの場合は自動ラップ検出を無効化
+            isNearStartLine = false
         }
 
         wasNearStartLine = isNearStartLine
