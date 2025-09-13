@@ -116,6 +116,7 @@ struct SearchableLocationView: View {
                 // キャンセル時のクリーンアップ
                 if selectedCoordinateForAdd == nil && selectedMapLocation == nil {
                     // 何も選択されていない場合はキャンセルされた
+                    showingMapLocationAdd = false
                 }
             }) {
                 MapLocationPickerWithInstructions(
@@ -144,10 +145,15 @@ struct SearchableLocationView: View {
                         // キャンセル時は何も選択されていない状態を保持
                         selectedCoordinateForAdd = nil
                         selectedMapLocation = nil
+                        showingMapLocationAdd = false
                     }
                 )
             }
-            .sheet(isPresented: $showingMapLocationAdd) {
+            .sheet(isPresented: $showingMapLocationAdd, onDismiss: {
+                // MapLocationAddViewが閉じられた時のクリーンアップ
+                selectedCoordinateForAdd = nil
+                selectedMapLocation = nil
+            }) {
                 if let coordinate = selectedCoordinateForAdd {
                     MapLocationAddView(coordinate: coordinate) {
                         // 場所追加完了後のクリーンアップ
