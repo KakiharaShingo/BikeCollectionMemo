@@ -18,7 +18,7 @@ class SubscriptionManager: ObservableObject {
     ]
     
     // 無料プランでのバイク登録制限
-    private let freePlanBikeLimit = 1
+    private let freePlanBikeLimit = 5
     
     // 選択されたバイクID（非プレミアム時に表示するバイク）
     @Published var selectedBikeID: String? {
