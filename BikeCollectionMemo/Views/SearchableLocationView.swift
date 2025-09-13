@@ -112,7 +112,12 @@ struct SearchableLocationView: View {
             .sheet(isPresented: $showingAddLocation) {
                 AddLocationView()
             }
-            .sheet(isPresented: $showingMapPicker) {
+            .sheet(isPresented: $showingMapPicker, onDismiss: {
+                // キャンセル時のクリーンアップ
+                if selectedCoordinateForAdd == nil && selectedMapLocation == nil {
+                    // 何も選択されていない場合はキャンセルされた
+                }
+            }) {
                 MapLocationPickerWithInstructions(
                     initialLocation: locationManager.currentLocation
                 ) { coordinate in

@@ -4,6 +4,7 @@ import MapKit
 struct MapLocationPickerView: View {
     let initialLocation: CLLocationCoordinate2D?
     let onLocationSelected: (CLLocationCoordinate2D) -> Void
+    let onCancel: (() -> Void)?
 
     @Environment(\.dismiss) private var dismiss
     @StateObject private var locationManager = LocationManager.shared
@@ -13,9 +14,10 @@ struct MapLocationPickerView: View {
     @State private var selectedCoordinate: CLLocationCoordinate2D?
     @State private var isDragging = false
 
-    init(initialLocation: CLLocationCoordinate2D? = nil, onLocationSelected: @escaping (CLLocationCoordinate2D) -> Void) {
+    init(initialLocation: CLLocationCoordinate2D? = nil, onLocationSelected: @escaping (CLLocationCoordinate2D) -> Void, onCancel: (() -> Void)? = nil) {
         self.initialLocation = initialLocation
         self.onLocationSelected = onLocationSelected
+        self.onCancel = onCancel
 
         // 初期位置を設定（提供されている場合はその位置、なければ東京）
         let center = initialLocation ?? CLLocationCoordinate2D(latitude: 35.6762, longitude: 139.6503)
@@ -101,6 +103,7 @@ struct MapLocationPickerView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("キャンセル") {
+                        onCancel?()
                         dismiss()
                     }
                 }
@@ -289,12 +292,23 @@ struct MapLocationPickerWithInstructions: View {
                     }
                 }
             }
-            .sheet(isPresented: $showingPicker) {
-                MapLocationPickerView(initialLocation: initialLocation) { coordinate in
-                    selectedCoordinate = coordinate
-                    currentStep = 3
-                    onLocationSelected(coordinate)
-                }
+            .sheet(isPresented: $showingPicker, onDismiss: {
+                // MapLocationPickerViewがキャンセルされた場合の処理
+                // selectedCoordinateが設定されていない場合はキャンセルされた
+            }) {
+                MapLocationPickerView(
+                    initialLocation: initialLocation,
+                    onLocationSelected: { coordinate in
+                        selectedCoordinate = coordinate
+                        currentStep = 3
+                        onLocationSelected(coordinate)
+                    },
+                    onCancel: {
+                        // キャンセルされた場合は選択状態をリセット
+                        selectedCoordinate = nil
+                        currentStep = 1
+                    }
+                )
             }
         }
     }
@@ -455,7 +469,12 @@ struct InstructionRow: View {
 }
 
 #Preview {
-    MapLocationPickerView { coordinate in
-        print("Selected: \(coordinate)")
-    }
+    MapLocationPickerView(
+        onLocationSelected: { coordinate in
+            print("Selected: \(coordinate)")
+        },
+        onCancel: {
+            print("Cancelled")
+        }
+    )
 }

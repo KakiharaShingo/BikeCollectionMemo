@@ -419,10 +419,13 @@ struct AddLocationView: View {
                 }
             }
             .sheet(isPresented: $showingMapPicker) {
-                MapLocationPickerView(initialLocation: locationManager.currentLocation) { selectedCoordinate in
-                    coordinate = selectedCoordinate
-                    loadAddressFromCoordinate(selectedCoordinate)
-                }
+                MapLocationPickerView(
+                    initialLocation: locationManager.currentLocation,
+                    onLocationSelected: { selectedCoordinate in
+                        coordinate = selectedCoordinate
+                        loadAddressFromCoordinate(selectedCoordinate)
+                    }
+                )
             }
         }
     }
