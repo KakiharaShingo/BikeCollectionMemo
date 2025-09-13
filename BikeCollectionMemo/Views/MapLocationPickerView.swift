@@ -122,6 +122,7 @@ struct MapLocationPickerView: View {
                 Text("選択中の位置")
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .foregroundColor(.primary)
 
                 Spacer()
             }
@@ -135,6 +136,7 @@ struct MapLocationPickerView: View {
                         Text("\(coordinate.latitude, specifier: "%.6f")")
                             .font(.caption)
                             .fontWeight(.medium)
+                            .foregroundColor(.primary)
                         Spacer()
                     }
 
@@ -145,6 +147,7 @@ struct MapLocationPickerView: View {
                         Text("\(coordinate.longitude, specifier: "%.6f")")
                             .font(.caption)
                             .fontWeight(.medium)
+                            .foregroundColor(.primary)
                         Spacer()
                     }
                 }
@@ -200,6 +203,7 @@ struct MapLocationPickerView: View {
                         .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)
                 )
             }
+            .buttonStyle(.plain) // タップ可能性を確保
         }
     }
 
@@ -338,6 +342,7 @@ struct MapLocationPickerWithInstructions: View {
                         Text("位置の選択が完了しました")
                             .font(.subheadline)
                             .fontWeight(.medium)
+                            .foregroundColor(.primary)
                     }
 
                     Text("緯度: \(selectedCoordinate!.latitude, specifier: "%.6f")")
