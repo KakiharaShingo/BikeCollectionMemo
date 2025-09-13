@@ -65,11 +65,15 @@
 		};
 		28AA08292E0BE4AC00B718BC /* BikeCollectionMemoTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = BikeCollectionMemoTests;
 			sourceTree = "<group>";
 		};
 		28AA08332E0BE4AC00B718BC /* BikeCollectionMemoUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = BikeCollectionMemoUITests;
 			sourceTree = "<group>";
 		};
@@ -339,13 +343,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo-BikeCollectionMemoUITests/Pods-BikeCollectionMemo-BikeCollectionMemoUITests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo-BikeCollectionMemoUITests/Pods-BikeCollectionMemo-BikeCollectionMemoUITests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -382,13 +382,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo/Pods-BikeCollectionMemo-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BikeCollectionMemo/Pods-BikeCollectionMemo-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

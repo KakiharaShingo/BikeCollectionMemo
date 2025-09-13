@@ -3,6 +3,12 @@ import SwiftUI
 
 class BikeViewModel: ObservableObject {
     private let persistenceController = PersistenceController.shared
+
+    @Published var bikes: [Bike] = []
+
+    init() {
+        fetchBikes()
+    }
     
     func createBike(name: String, manufacturer: String, model: String, year: Int32, imageData: Data?) {
         let context = persistenceController.container.viewContext
@@ -16,10 +22,11 @@ class BikeViewModel: ObservableObject {
         bike.imageData = imageData
         bike.createdAt = Date()
         bike.updatedAt = Date()
-        
+
         saveContext()
+        fetchBikes()
     }
-    
+
     func updateBike(_ bike: Bike, name: String, manufacturer: String, model: String, year: Int32, imageData: Data?) {
         bike.name = name
         bike.manufacturer = manufacturer
@@ -29,14 +36,29 @@ class BikeViewModel: ObservableObject {
             bike.imageData = imageData
         }
         bike.updatedAt = Date()
-        
+
         saveContext()
+        fetchBikes()
     }
     
     func deleteBike(_ bike: Bike) {
         let context = persistenceController.container.viewContext
         context.delete(bike)
         saveContext()
+        fetchBikes()
+    }
+
+    func fetchBikes() {
+        let context = persistenceController.container.viewContext
+        let request: NSFetchRequest<Bike> = Bike.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Bike.createdAt, ascending: false)]
+
+        do {
+            bikes = try context.fetch(request)
+        } catch {
+            print("Error fetching bikes: \(error)")
+            bikes = []
+        }
     }
     
     private func saveContext() {

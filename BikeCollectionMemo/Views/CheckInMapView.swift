@@ -319,7 +319,7 @@ struct LocationPinView: View {
                 .padding(.horizontal, 4)
                 .background(
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.white.opacity(0.9))
+                        .fill(Color(.systemBackground).opacity(0.9))
                 )
                 .shadow(radius: 1)
         }
@@ -522,14 +522,13 @@ struct SearchedLocationPinView: View {
 
             Text(name)
                 .font(.caption2)
-                .foregroundColor(.primary)
+                .foregroundColor(.white)
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)
                 .background(
                     RoundedRectangle(cornerRadius: 4)
                         .fill(Color.red.opacity(0.9))
                 )
-                .foregroundColor(.white)
                 .shadow(radius: 2)
         }
     }
