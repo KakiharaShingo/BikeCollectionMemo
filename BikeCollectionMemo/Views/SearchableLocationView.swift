@@ -21,6 +21,7 @@ struct SearchableLocationView: View {
     @State private var showingMapPicker = false
     @State private var showingMapLocationAdd = false
     @State private var selectedCoordinateForAdd: CLLocationCoordinate2D?
+    @State private var selectedMapLocation: (coordinate: CLLocationCoordinate2D, name: String)?
 
     // フィルター用
     @State private var selectedCategory: CheckInLocation.LocationCategory?
@@ -73,6 +74,11 @@ struct SearchableLocationView: View {
                             emptySearchState
                         }
 
+                        // 選択された位置表示
+                        if let selectedMap = selectedMapLocation {
+                            selectedLocationSection(coordinate: selectedMap.coordinate, name: selectedMap.name)
+                        }
+
                         // 新規場所追加
                         addNewLocationSection
                     }
@@ -110,8 +116,23 @@ struct SearchableLocationView: View {
                 MapLocationPickerWithInstructions(
                     initialLocation: locationManager.currentLocation
                 ) { coordinate in
-                    // マップで選択された座標を保存して詳細入力画面を表示
+                    // マップで選択された座標を保存
                     selectedCoordinateForAdd = coordinate
+
+                    // 視覚的フィードバック用に位置情報を保存
+                    Task {
+                        if let address = await locationManager.reverseGeocode(coordinate: coordinate) {
+                            await MainActor.run {
+                                selectedMapLocation = (coordinate: coordinate, name: address)
+                            }
+                        } else {
+                            await MainActor.run {
+                                selectedMapLocation = (coordinate: coordinate, name: "選択された位置")
+                            }
+                        }
+                    }
+
+                    // 詳細入力画面を表示
                     showingMapLocationAdd = true
                 }
             }
@@ -120,6 +141,7 @@ struct SearchableLocationView: View {
                     MapLocationAddView(coordinate: coordinate) {
                         // 場所追加完了後のクリーンアップ
                         selectedCoordinateForAdd = nil
+                        selectedMapLocation = nil
                     }
                 }
             }
@@ -266,6 +288,88 @@ struct SearchableLocationView: View {
             }
         }
         .padding(Constants.Spacing.extraLarge)
+    }
+
+    // MARK: - Selected Location Section
+    private func selectedLocationSection(coordinate: CLLocationCoordinate2D, name: String) -> some View {
+        VStack(alignment: .leading, spacing: Constants.Spacing.small) {
+            Text("選択された位置")
+                .font(.headline)
+                .fontWeight(.semibold)
+                .padding(.horizontal, Constants.Spacing.small)
+
+            HStack(spacing: Constants.Spacing.medium) {
+                // 位置アイコン
+                Image(systemName: "mappin.circle.fill")
+                    .foregroundColor(.green)
+                    .font(.title2)
+                    .frame(width: 32)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(name)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.primary)
+
+                    HStack {
+                        Text("緯度: \(coordinate.latitude, specifier: "%.6f")")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    HStack {
+                        Text("経度: \(coordinate.longitude, specifier: "%.6f")")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                Spacer()
+
+                // アクションボタン群
+                HStack(spacing: Constants.Spacing.small) {
+                    // クリアボタン
+                    Button(action: {
+                        selectedMapLocation = nil
+                        selectedCoordinateForAdd = nil
+                    }) {
+                        Image(systemName: "xmark.circle")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .padding(8)
+                            .background(
+                                Circle()
+                                    .fill(Color(.systemGray6))
+                            )
+                    }
+                    .buttonStyle(.plain)
+
+                    // 詳細情報入力ボタン
+                    Button(action: {
+                        showingMapLocationAdd = true
+                    }) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.subheadline)
+                            .foregroundColor(.green)
+                            .padding(8)
+                            .background(
+                                Circle()
+                                    .fill(Color.green.opacity(0.1))
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(Constants.Spacing.medium)
+            .background(
+                RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
+                    .fill(Color.green.opacity(0.1))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
+                            .stroke(Color.green.opacity(0.3), lineWidth: 2)
+                    )
+            )
+        }
     }
 
     // MARK: - Add New Location Section
