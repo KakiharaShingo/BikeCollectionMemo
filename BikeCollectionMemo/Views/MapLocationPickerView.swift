@@ -88,7 +88,7 @@ struct MapLocationPickerView: View {
                                     .foregroundColor(.blue)
                                     .font(.title2)
                                     .padding()
-                                    .background(Color.white)
+                                    .background(Color(.systemBackground))
                                     .clipShape(Circle())
                                     .shadow(radius: 4)
                             }
@@ -156,7 +156,7 @@ struct MapLocationPickerView: View {
         .padding(Constants.Spacing.medium)
         .background(
             RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
-                .fill(Color.white)
+                .fill(Color(.systemBackground))
                 .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
         )
     }
@@ -180,7 +180,7 @@ struct MapLocationPickerView: View {
                 .padding(.vertical, Constants.Spacing.small)
                 .background(
                     RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
-                        .fill(Color.white)
+                        .fill(Color(.systemBackground))
                         .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
                 )
             }
