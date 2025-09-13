@@ -262,6 +262,7 @@ struct MapLocationPickerView: View {
 struct MapLocationPickerWithInstructions: View {
     let initialLocation: CLLocationCoordinate2D?
     let onLocationSelected: (CLLocationCoordinate2D) -> Void
+    let onCancel: (() -> Void)?
 
     @Environment(\.dismiss) private var dismiss
     @State private var showingPicker = false
@@ -288,6 +289,7 @@ struct MapLocationPickerWithInstructions: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("キャンセル") {
+                        onCancel?()
                         dismiss()
                     }
                 }
@@ -421,8 +423,9 @@ struct MapLocationPickerWithInstructions: View {
             if currentStep == 1 {
                 currentStep = 2
                 showingPicker = true
-            } else if selectedCoordinate != nil {
+            } else if let coordinate = selectedCoordinate {
                 // 選択完了後の処理
+                onLocationSelected(coordinate)
                 dismiss()
             }
         }) {

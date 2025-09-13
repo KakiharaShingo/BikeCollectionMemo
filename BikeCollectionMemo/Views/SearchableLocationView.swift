@@ -119,27 +119,33 @@ struct SearchableLocationView: View {
                 }
             }) {
                 MapLocationPickerWithInstructions(
-                    initialLocation: locationManager.currentLocation
-                ) { coordinate in
-                    // マップで選択された座標を保存
-                    selectedCoordinateForAdd = coordinate
+                    initialLocation: locationManager.currentLocation,
+                    onLocationSelected: { coordinate in
+                        // マップで選択された座標を保存
+                        selectedCoordinateForAdd = coordinate
 
-                    // 視覚的フィードバック用に位置情報を保存
-                    Task {
-                        if let address = await locationManager.reverseGeocode(coordinate: coordinate) {
-                            await MainActor.run {
-                                selectedMapLocation = (coordinate: coordinate, name: address)
-                            }
-                        } else {
-                            await MainActor.run {
-                                selectedMapLocation = (coordinate: coordinate, name: "選択された位置")
+                        // 視覚的フィードバック用に位置情報を保存
+                        Task {
+                            if let address = await locationManager.reverseGeocode(coordinate: coordinate) {
+                                await MainActor.run {
+                                    selectedMapLocation = (coordinate: coordinate, name: address)
+                                }
+                            } else {
+                                await MainActor.run {
+                                    selectedMapLocation = (coordinate: coordinate, name: "選択された位置")
+                                }
                             }
                         }
-                    }
 
-                    // 詳細入力画面を表示
-                    showingMapLocationAdd = true
-                }
+                        // 詳細入力画面を表示
+                        showingMapLocationAdd = true
+                    },
+                    onCancel: {
+                        // キャンセル時は何も選択されていない状態を保持
+                        selectedCoordinateForAdd = nil
+                        selectedMapLocation = nil
+                    }
+                )
             }
             .sheet(isPresented: $showingMapLocationAdd) {
                 if let coordinate = selectedCoordinateForAdd {
