@@ -10,21 +10,44 @@ struct LapTimerView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: Constants.Spacing.large) {
-                    // タイマー表示
-                    TimerDisplayCard()
+            VStack(spacing: 20) {
+                // タイマー表示
+                VStack(spacing: 10) {
+                    Text("現在のラップ")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
 
-                    // ステータス表示
-                    LapStatusCard()
+                    Text(lapTimerManager.currentLapTime.lapTimeString)
+                        .font(.system(size: 48, weight: .bold, design: .monospaced))
+                        .foregroundColor(.primary)
 
-                    // コントロールボタン
-                    TimerControlButtons(showingCourseSelection: $showingCourseSelection)
-
-                    Spacer(minLength: 50)
+                    Text("合計時間: \(lapTimerManager.totalTime.shortTimeString)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                 }
-                .padding(Constants.Spacing.medium)
+                .padding(20)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(lapTimerManager.timerState == .tracking ? Color.green.opacity(0.1) : Color(.systemGray6))
+                )
+
+                // ステータス表示
+                LazyVGrid(columns: [
+                    GridItem(.flexible()),
+                    GridItem(.flexible())
+                ], spacing: 10) {
+                    statusItem(title: "ラップ", value: "\(lapTimerManager.currentLap)", color: .blue)
+                    statusItem(title: "速度", value: lapTimerManager.currentSpeed.speedKmh, color: .green)
+                    statusItem(title: "距離", value: lapTimerManager.distance.distanceString, color: .purple)
+                    statusItem(title: "状態", value: lapTimerManager.timerState.rawValue, color: .orange)
+                }
+
+                // コントロールボタン
+                controlButtons
+
+                Spacer()
             }
+            .padding(16)
             .navigationTitle("ラップタイマー")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -55,87 +78,7 @@ struct LapTimerView: View {
         }
     }
 
-}
-
-// MARK: - Timer Display Card
-struct TimerDisplayCard: View {
-    @StateObject private var lapTimerManager = LapTimerManager.shared
-
-    var body: some View {
-        VStack(spacing: Constants.Spacing.medium) {
-            Text("現在のラップ")
-                .font(.headline)
-                .foregroundColor(.secondary)
-
-            Text(lapTimerManager.currentLapTime.lapTimeString)
-                .font(.system(size: 48, weight: .bold, design: .monospaced))
-                .foregroundColor(.primary)
-
-            Text("合計時間: \(lapTimerManager.totalTime.shortTimeString)")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-        }
-        .padding(Constants.Spacing.large)
-        .background(
-            RoundedRectangle(cornerRadius: Constants.CornerRadius.large)
-                .fill(lapTimerManager.timerState == .tracking ? Color.green.opacity(0.1) : Color(.systemGray6))
-        )
-    }
-}
-
-// MARK: - Lap Status Card
-struct LapStatusCard: View {
-    @StateObject private var lapTimerManager = LapTimerManager.shared
-
-    var body: some View {
-        LazyVGrid(columns: [
-            GridItem(.flexible()),
-            GridItem(.flexible())
-        ], spacing: Constants.Spacing.small) {
-            StatusItem(title: "ラップ", value: "\(lapTimerManager.currentLap)", color: .blue)
-            StatusItem(title: "速度", value: lapTimerManager.currentSpeed.speedKmh, color: .green)
-            StatusItem(title: "距離", value: lapTimerManager.distance.distanceString, color: .purple)
-            StatusItem(title: "状態", value: lapTimerManager.timerState.rawValue, color: .orange)
-        }
-    }
-}
-
-// MARK: - Timer Control Buttons
-struct TimerControlButtons: View {
-    @StateObject private var lapTimerManager = LapTimerManager.shared
-    @Binding var showingCourseSelection: Bool
-
-    var body: some View {
-        VStack(spacing: Constants.Spacing.medium) {
-            if lapTimerManager.timerState == .idle {
-                Button("計測開始") {
-                    showingCourseSelection = true
-                }
-                .buttonStyle(PrimaryButtonStyle())
-            } else if lapTimerManager.timerState == .tracking {
-                HStack(spacing: Constants.Spacing.medium) {
-                    Button("ラップ") {
-                        lapTimerManager.completeLap()
-                    }
-                    .buttonStyle(SecondaryButtonStyle())
-
-                    Button("停止") {
-                        lapTimerManager.stopSession()
-                    }
-                    .buttonStyle(DangerButtonStyle())
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Status Item
-struct StatusItem: View {
-    let title: String
-    let value: String
-    let color: Color
-
-    var body: some View {
+    private func statusItem(title: String, value: String, color: Color) -> some View {
         VStack(spacing: 4) {
             Text(title)
                 .font(.caption)
@@ -146,52 +89,51 @@ struct StatusItem: View {
                 .foregroundColor(.primary)
                 .lineLimit(1)
         }
-        .padding(Constants.Spacing.medium)
+        .padding(12)
         .background(
-            RoundedRectangle(cornerRadius: Constants.CornerRadius.medium)
+            RoundedRectangle(cornerRadius: 8)
                 .fill(color.opacity(0.1))
         )
     }
-}
 
-// MARK: - Button Styles
-struct PrimaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.headline)
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.green)
-            .cornerRadius(12)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-    }
-}
+    private var controlButtons: some View {
+        VStack(spacing: 12) {
+            if lapTimerManager.timerState == .idle {
+                Button("計測開始") {
+                    showingCourseSelection = true
+                }
+                .font(.headline)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.green)
+                .cornerRadius(12)
+            } else if lapTimerManager.timerState == .tracking {
+                HStack(spacing: 12) {
+                    Button("ラップ") {
+                        lapTimerManager.completeLap()
+                    }
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.blue)
+                    .cornerRadius(12)
 
-struct SecondaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.headline)
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.blue)
-            .cornerRadius(12)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+                    Button("停止") {
+                        lapTimerManager.stopSession()
+                    }
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.red)
+                    .cornerRadius(12)
+                }
+            }
+        }
     }
-}
 
-struct DangerButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.headline)
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.red)
-            .cornerRadius(12)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-    }
 }
 
 #Preview {

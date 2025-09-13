@@ -79,9 +79,9 @@ class LapTimerManager: NSObject, ObservableObject {
         stopTimer()
         locationManager.stopLocationUpdates()
 
-        if var session = currentSession {
+        if let session = currentSession {
             // セッション終了処理
-            session = LapTimeSession(
+            let completedSession = LapTimeSession(
                 courseId: session.courseId,
                 courseName: session.courseName,
                 startTime: session.startTime,
@@ -94,7 +94,7 @@ class LapTimerManager: NSObject, ObservableObject {
                 trackPoints: trackPoints
             )
 
-            saveSession(session)
+            saveSession(completedSession)
         }
 
         currentSession = nil
@@ -105,7 +105,7 @@ class LapTimerManager: NSObject, ObservableObject {
         guard timerState == .tracking, let lapStart = lapStartTime else { return }
 
         let lapEndTime = Date()
-        let lapTime = lapEndTime.timeIntervalSince(lapStart)
+        _ = lapEndTime.timeIntervalSince(lapStart)
 
         // 現在のラップを完了
         let completedLap = LapRecord(

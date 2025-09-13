@@ -3,7 +3,7 @@ import CoreLocation
 
 // MARK: - Lap Time Session
 struct LapTimeSession: Codable, Identifiable {
-    let id = UUID()
+    var id = UUID()
     let courseId: UUID?
     let courseName: String
     let startTime: Date
@@ -44,6 +44,20 @@ struct LapTimeSession: Codable, Identifiable {
         self.totalDistance = 0
         self.startLocation = startLocation
         self.trackPoints = []
+    }
+
+    init(courseId: UUID?, courseName: String, startTime: Date, endTime: Date?, bikeId: String?, bikeName: String?, laps: [LapRecord], totalDistance: Double, startLocation: CLLocationCoordinate2D, trackPoints: [GPSTrackPoint]) {
+        self.id = UUID()
+        self.courseId = courseId
+        self.courseName = courseName
+        self.startTime = startTime
+        self.endTime = endTime
+        self.bikeId = bikeId
+        self.bikeName = bikeName
+        self.laps = laps
+        self.totalDistance = totalDistance
+        self.startLocation = startLocation
+        self.trackPoints = trackPoints
     }
 }
 
